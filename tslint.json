@@ -4,7 +4,13 @@
     "no-console": false,
     "object-literal-sort-keys": false,
     "member-access": false,
-    "ordered-imports": false
+    "ordered-imports": false,
+    "interface-name": false,
+    "class-name": false,
+    "max-classes-per-file": false,
+    "no-empty": false,
+    "no-empty-interface": true,
+    "variable-name": false
   },
   "linterOptions": {
     "exclude": ["**/*.json", "node_modules"]
