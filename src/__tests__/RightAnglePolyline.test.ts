@@ -2,7 +2,8 @@ import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline'
 import { Point } from '../unit/Point'
 import { ScaleType, VisualSize } from '../basic/Displayable'
 import { ScaleInfo } from '../basic/ScaleInfo'
-import { Polyline } from '../shape/Polyline'
+import { CatMullCurvePolyline } from '../shape/polyline/CatMullCurvePolyline'
+import { LinePolyline } from '../shape/polyline/LinePolyline'
 
 test('RightAnglePolyline', () => {
     const scaleInfo: ScaleInfo = new ScaleInfo()
@@ -43,7 +44,7 @@ test('LinePolyline', () => {
     visualSize.height = 600
 
     const points: Point[] = [new Point(10, 10), new Point(100, 100)]
-    const polyline = new Polyline({
+    const polyline = new LinePolyline({
         points,
         lineWidth: 2,
         smooth: 1,
@@ -60,4 +61,37 @@ test('LinePolyline', () => {
     console.log(polyline.linePaths)
     console.log(polyline.getScaleLinePaths())
     expect(polyline.contain(121, 21)).toBeTruthy()
+})
+
+test('CatMullCurvePolyline', () => {
+    const scaleInfo: ScaleInfo = new ScaleInfo()
+    scaleInfo.scale = 2
+    scaleInfo.lastOffset = new Point(0, 0)
+    const visualSize: VisualSize = new VisualSize()
+    visualSize.width = 400
+    visualSize.height = 600
+
+    const points: Point[] = [new Point(10, 10), new Point(100, 100)]
+    const polyline = new CatMullCurvePolyline({
+        points,
+        lineWidth: 2,
+        smooth: 0,
+        // lineGradient: true,
+        isDash: true,
+        lineColor: 'blue',
+        scaleType: ScaleType.POSITION,
+        clickable: true,
+    })
+    polyline.scaleInfo = scaleInfo
+    polyline.visualSize = visualSize
+
+    polyline.catMullPaths = polyline.getCatMullPaths()
+    console.log(polyline.catMullPaths)
+    console.log(polyline.getScaleCatMullPaths())
+    polyline.points = [
+        Point.scale(new Point(10, 10), polyline.scaleInfo),
+        Point.scale(new Point(100, 100), polyline.scaleInfo),
+    ]
+    console.log(polyline.getCatMullPaths())
+    expect(polyline.contain(20, 20)).toBeFalsy()
 })

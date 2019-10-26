@@ -1,5 +1,6 @@
 import { Polyline, PolylineCfg } from '../Polyline'
 import { Line, LinePath, Point } from '../../unit/Point'
+import { ScaleInfo } from '../../basic/ScaleInfo'
 
 export class RightAnglePolyline extends Polyline {
     startK: number
@@ -7,10 +8,28 @@ export class RightAnglePolyline extends Polyline {
     constructor(cfg: RightAnglePolylineCfg) {
         super(cfg)
         this.startK = cfg.startK
+        this.getRightAngleLinePaths()
+    }
+
+    contain(x: number, y: number): boolean {
+        const scalePaths = this.getScalePaths()
+        const point = new Point(x, y)
+        for (const path of scalePaths) {
+            const distance = path.toLine().calcDistanceFromPointToLine(point)
+            if (distance < this.tapOffset) {
+                return true
+            }
+        }
+        return false
+    }
+
+    pan(scaleInfo: ScaleInfo): void {
+        this.linePaths.forEach(path => {
+            path.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y)
+        })
     }
 
     draw(context: any): void {
-        this.getRightAngleLinePaths()
         this.drawRightAngleLine(context)
     }
 
