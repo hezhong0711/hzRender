@@ -1,6 +1,6 @@
 {
   "name": "hzrender",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "uni-app canvas 库",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
