@@ -5,7 +5,11 @@ export class Point extends Coordinate {
     static scale(point: Point, scaleInfo: ScaleInfo) {
         const x = scaleInfo.scale * point.x + scaleInfo.lastOffset.x
         const y = scaleInfo.scale * point.y + scaleInfo.lastOffset.y
-        return new Point(x, y)
+        return new Point(x, y, point.color)
+    }
+
+    static copy(point: Point) {
+        return new Point(point.x, point.y, point.color)
     }
 
     color: string
@@ -30,8 +34,8 @@ export class LinePath {
     end: Point
 
     constructor(start: Point, end: Point) {
-        this.start = start
-        this.end = end
+        this.start = Point.copy(start)
+        this.end = Point.copy(end)
     }
 
     move(x: number, y: number) {
@@ -53,8 +57,8 @@ export class CatMullCurve extends LinePath {
 
     constructor(start: Point, ctrl1: Point, ctrl2: Point, end: Point) {
         super(start, end)
-        this.ctrl1 = ctrl1
-        this.ctrl2 = ctrl2
+        this.ctrl1 = Point.copy(ctrl1)
+        this.ctrl2 = Point.copy(ctrl2)
     }
 
     move(x: number, y: number) {
