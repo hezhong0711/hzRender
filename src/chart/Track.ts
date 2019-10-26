@@ -3,6 +3,7 @@ import { Line, Point } from '../unit/Point'
 import { Circle } from '../shape/Circle'
 import { ScaleType } from '../basic/Displayable'
 import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline'
+import { ReadType } from './ReadType'
 
 const colorList = [
     'rgba(151,0,237,1)',
@@ -130,21 +131,21 @@ export class Track extends Chart {
 
     private splitTrackModal() {
         const idx: [number, number] = [0, 0]
-        let lastReadType: ReadType = '0'
+        let lastReadType: ReadType = ReadType.s
         for (const modal of this.trackModals) {
             // readType 与上一次 readType相同，加入到上一次的容器中
-            if (lastReadType === modal.readType || (lastReadType === '0' && modal.readType === '1')) {
+            if (lastReadType === modal.readType || (lastReadType === ReadType.s && modal.readType === ReadType.s1)) {
                 this.addLinePathPoint(lastReadType, modal.point, idx)
             }
             // 如果不相同，则要在上一个容器中添加，然后在另一个容器中新添加意向
             else {
                 this.addLinePathPoint(lastReadType, modal.point, idx)
                 switch (modal.readType) {
-                    case '0':
-                    case '1':
+                    case ReadType.s:
+                    case ReadType.s1:
                         idx[0]++
                         break
-                    case '2':
+                    case ReadType.s2:
                         idx[1]++
                         break
                 }
@@ -156,8 +157,8 @@ export class Track extends Chart {
 
     private addLinePathPoint(readType: ReadType, point: Point, idx: [number, number]) {
         switch (readType) {
-            case '0':
-            case '1':
+            case ReadType.s:
+            case ReadType.s1:
                 {
                     let arr = this.solidLinePoints[idx[0]]
                     if (arr == null) {
@@ -168,7 +169,7 @@ export class Track extends Chart {
                     this.solidLinePoints[idx[0]] = arr
                 }
                 break
-            case '2':
+            case ReadType.s2:
                 {
                     let arr = this.dashLinePoints[idx[1]]
                     if (arr == null) {
@@ -214,5 +215,3 @@ export class TrackDataModal {
     list_y: number
     list_type: number
 }
-
-type ReadType = '0' | '1' | '2'

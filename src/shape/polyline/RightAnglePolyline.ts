@@ -10,6 +10,7 @@ export class RightAnglePolyline extends Polyline {
     }
 
     draw(context: any): void {
+        this.getRightAngleLinePaths()
         this.drawRightAngleLine(context)
     }
 
@@ -24,24 +25,40 @@ export class RightAnglePolyline extends Polyline {
         this.isHighlight = true
     }
 
-    private drawRightAngleLine(context: any) {
-        this.getRightAngleLinePaths()
-        // context.beginPath()
-        // context.setLineJoin('miter')
-        // context.setLineWidth(2)
-        // context.moveTo(130, 10)
-        // context.lineTo(220, 50)
-        // context.lineTo(130, 90)
-        // context.stroke()
+    getRightAngleLinePaths() {
+        this.linePaths = []
+        let start = null
+        let end = null
+        let foot = null
+        for (const point of this.points) {
+            if (start != null) {
+                end = point
+                foot = this.drawLinkTemp(start, end, foot)
+                start = end
+            } else {
+                start = point
+            }
+        }
+    }
 
-        // context.draw()
+    getScalePaths() {
+        const scalePaths = []
+        for (const path of this.linePaths) {
+            const scalePath = new LinePath(this.getScalePoint(path.start), this.getScalePoint(path.end))
+            if (!this.inVisualArea(scalePath)) {
+                continue
+            }
+            scalePaths.push(scalePath)
+        }
+        return scalePaths
+    }
+
+    private drawRightAngleLine(context: any) {
+        const scalePaths = this.getScalePaths()
         context.beginPath()
         context.setLineJoin('miter')
-        for (let i = 0; i < this.linePaths.length; i++) {
-            const path = new LinePath(
-                this.getScalePoint(this.linePaths[i].start),
-                this.getScalePoint(this.linePaths[i].end),
-            )
+        for (let i = 0; i < scalePaths.length; i++) {
+            const path = scalePaths[i]
             if (!this.inVisualArea(path)) {
                 continue
             }
@@ -69,22 +86,6 @@ export class RightAnglePolyline extends Polyline {
             }
         }
         context.stroke()
-    }
-
-    private getRightAngleLinePaths() {
-        this.linePaths = []
-        let start = null
-        let end = null
-        let foot = null
-        for (const point of this.points) {
-            if (start != null) {
-                end = point
-                foot = this.drawLinkTemp(start, end, foot)
-                start = end
-            } else {
-                start = point
-            }
-        }
     }
 
     private drawLinkTemp(start: Point, end: Point, pFoot: Point) {

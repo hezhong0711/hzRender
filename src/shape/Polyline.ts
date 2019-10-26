@@ -27,11 +27,18 @@ export class Polyline extends Displayable {
         this.tapOffset = cfg.tapOffset ? cfg.tapOffset : 2
         this.highlightStyle = cfg.highlightStyle ? cfg.highlightStyle : new PolylineStyle()
         this.clickable = cfg.clickable ? cfg.clickable : false
+
+        if (this.smooth === 0) {
+            this.linePaths = this.getLinePaths()
+        } else {
+            this.catMullPaths = this.getCatMullPaths()
+        }
     }
 
     contain(x: number, y: number): boolean {
+        const scalePaths = this.getScaleLinePaths()
         const point = new Point(x, y)
-        for (const path of this.linePaths) {
+        for (const path of scalePaths) {
             const distance = path.toLine().calcDistanceFromPointToLine(point)
             if (distance < this.tapOffset) {
                 return true
@@ -84,6 +91,27 @@ export class Polyline extends Displayable {
         this.isHighlight = false
     }
 
+    getLinePaths() {
+        const cache: LinePath[] = []
+
+        for (let i = 1; i < this.points.length; i++) {
+            cache.push(new LinePath(this.points[i - 1], this.points[i]))
+        }
+        return cache
+    }
+
+    getScaleLinePaths() {
+        const scalePaths = []
+        for (const path of this.linePaths) {
+            const scalePath = new LinePath(this.getScalePoint(path.start), this.getScalePoint(path.end))
+            if (!this.inVisualArea(scalePath)) {
+                continue
+            }
+            scalePaths.push(scalePath)
+        }
+        return scalePaths
+    }
+
     private isLineInVisualArea(line: Line): boolean {
         return !(
             line.getCrossPointToLine(this.visualSize.topLine()) == null &&
@@ -98,10 +126,9 @@ export class Polyline extends Displayable {
     }
 
     private drawLine(context: any) {
-        this.linePaths = this.getLinePaths()
-
-        for (let i = 0; i < this.linePaths.length; i++) {
-            const path = this.linePaths[i]
+        const scalePaths = this.getScaleLinePaths()
+        for (let i = 0; i < scalePaths.length; i++) {
+            const path = scalePaths[i]
             if (!this.inVisualArea(path)) {
                 // console.log('line is out of visual area');
                 continue
@@ -133,9 +160,9 @@ export class Polyline extends Displayable {
     }
 
     private drawCatMull(context: any) {
-        this.catMullPaths = this.getCatMullPaths()
+        const scalePaths = this.getScaleCatMullPaths()
         // console.log(this.catMullPaths);
-        for (const path of this.catMullPaths) {
+        for (const path of scalePaths) {
             if (!this.inVisualArea(path)) {
                 // console.log('cat mull curve is out of visual area');
                 continue
@@ -186,10 +213,10 @@ export class Polyline extends Displayable {
         let d1powA
         const length = data.length
         for (let i = 0; i < length - 1; i++) {
-            p0 = i === 0 ? Point.scale(data[0], this.scaleInfo) : Point.scale(data[i - 1], this.scaleInfo)
-            p1 = Point.scale(data[i], this.scaleInfo)
-            p2 = Point.scale(data[i + 1], this.scaleInfo)
-            p3 = i + 2 < length ? Point.scale(data[i + 2], this.scaleInfo) : p2
+            p0 = i === 0 ? data[0] : data[i - 1]
+            p1 = data[i]
+            p2 = data[i + 1]
+            p3 = i + 2 < length ? data[i + 2] : p2
 
             d1 = Math.sqrt(Math.pow(p0.x - p1.x, 2) + Math.pow(p0.y - p1.y, 2))
             d2 = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -235,13 +262,21 @@ export class Polyline extends Displayable {
         return cache
     }
 
-    private getLinePaths() {
-        const cache: LinePath[] = []
-
-        for (let i = 1; i < this.points.length; i++) {
-            cache.push(new LinePath(this.getScalePoint(this.points[i - 1]), this.getScalePoint(this.points[i])))
+    private getScaleCatMullPaths() {
+        const scalePaths = []
+        for (const path of this.catMullPaths) {
+            const scalePath = new CatMullCurve(
+                this.getScalePoint(path.start),
+                this.getScalePoint(path.ctrl1),
+                this.getScalePoint(path.ctrl2),
+                this.getScalePoint(path.end),
+            )
+            if (!this.inVisualArea(scalePath)) {
+                continue
+            }
+            scalePaths.push(scalePath)
         }
-        return cache
+        return scalePaths
     }
 }
 
