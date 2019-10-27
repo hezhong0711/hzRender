@@ -1,5 +1,5 @@
 import { Polyline, PolylineCfg } from '../Polyline';
-import { CatMullCurve, Line, LinePath, Point } from '../../unit/Point';
+import { CatMullCurve, LinePath, Point } from '../../unit/Point';
 import { ScaleInfo } from '../../basic/ScaleInfo';
 
 export class LinePolyline extends Polyline {
