@@ -1,6 +1,7 @@
 import EventFul from './EventFul';
 import { ScaleInfo } from './ScaleInfo';
-import { Line, Point } from '../unit/Point';
+import { Point } from '../unit/Point';
+import { Line } from '../unit/Line';
 
 export abstract class Displayable extends EventFul {
     zIndex: number;

@@ -1,9 +1,10 @@
 import { Chart, ChartCfg, ChartModal } from '../basic/Chart';
-import { Line, Point } from '../unit/Point';
+import { Point } from '../unit/Point';
 import { Circle } from '../shape/Circle';
 import { ScaleType } from '../basic/Displayable';
 import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline';
 import { ReadType } from './ReadType';
+import { Line } from '../unit/Line';
 
 const colorList = [
     'rgba(151,0,237,1)',

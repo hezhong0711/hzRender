@@ -1,6 +1,8 @@
-import { Polyline, PolylineCfg, PolylineStyle } from '../Polyline';
-import { CatMullCurve, Line, LinePath, Point } from '../../unit/Point';
+import { Polyline, PolylineCfg } from '../Polyline';
+import { Point } from '../../unit/Point';
 import { ScaleInfo } from '../../basic/ScaleInfo';
+import { CatMullCurve } from '../../unit/CatMullCurve';
+import { Line } from '../../unit/Line';
 
 export class CatMullCurvePolyline extends Polyline {
     catMullPaths: CatMullCurve[] = [];
@@ -18,6 +20,16 @@ export class CatMullCurvePolyline extends Polyline {
         this.catMullPaths.forEach(path => {
             path.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
         });
+    }
+
+    inVisualArea(linePath: CatMullCurve): boolean {
+        return !(
+            !this.isPointInVisualArea(linePath.start) &&
+            !this.isPointInVisualArea(linePath.end) &&
+            !this.isPointInVisualArea(linePath.ctrl1) &&
+            !this.isPointInVisualArea(linePath.ctrl2) &&
+            !this.isLineInVisualArea(linePath.toLine())
+        );
     }
 
     getCatMullPaths() {

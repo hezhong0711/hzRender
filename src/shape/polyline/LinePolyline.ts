@@ -1,6 +1,7 @@
 import { Polyline, PolylineCfg } from '../Polyline';
-import { CatMullCurve, LinePath, Point } from '../../unit/Point';
+import { Point } from '../../unit/Point';
 import { ScaleInfo } from '../../basic/ScaleInfo';
+import { LinePath } from '../../unit/LinePath';
 
 export class LinePolyline extends Polyline {
     constructor(cfg: PolylineCfg) {
@@ -20,16 +21,6 @@ export class LinePolyline extends Polyline {
     }
 
     inVisualArea(linePath: LinePath): boolean {
-        if (linePath instanceof CatMullCurve) {
-            return !(
-                !this.isPointInVisualArea(linePath.start) &&
-                !this.isPointInVisualArea(linePath.end) &&
-                !this.isPointInVisualArea(linePath.ctrl1) &&
-                !this.isPointInVisualArea(linePath.ctrl2) &&
-                !this.isLineInVisualArea(linePath.toLine())
-            );
-        }
-
         return !(
             !this.isPointInVisualArea(linePath.start) &&
             !this.isPointInVisualArea(linePath.end) &&

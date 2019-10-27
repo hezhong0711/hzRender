@@ -1,6 +1,7 @@
 import { Displayable, DisplayableCfg } from '../basic/Displayable';
-import { CatMullCurve, Line, LinePath, Point } from '../unit/Point';
-import { ScaleInfo } from '../basic/ScaleInfo';
+import { Point } from '../unit/Point';
+import { Line } from '../unit/Line';
+import { LinePath } from '../unit/LinePath';
 
 export abstract class Polyline extends Displayable {
     points: Point[] = [];
@@ -12,8 +13,7 @@ export abstract class Polyline extends Displayable {
     isHighlight: boolean = false;
     highlightStyle?: PolylineStyle;
     clickable: boolean;
-    linePaths: LinePath[] = [];
-    catMullPaths: CatMullCurve[] = [];
+    linePaths: any = [];
     tapOffset: number;
 
     constructor(cfg: PolylineCfg) {
@@ -34,16 +34,6 @@ export abstract class Polyline extends Displayable {
     }
 
     inVisualArea(linePath: LinePath): boolean {
-        if (linePath instanceof CatMullCurve) {
-            return !(
-                !this.isPointInVisualArea(linePath.start) &&
-                !this.isPointInVisualArea(linePath.end) &&
-                !this.isPointInVisualArea(linePath.ctrl1) &&
-                !this.isPointInVisualArea(linePath.ctrl2) &&
-                !this.isLineInVisualArea(linePath.toLine())
-            );
-        }
-
         return !(
             !this.isPointInVisualArea(linePath.start) &&
             !this.isPointInVisualArea(linePath.end) &&

@@ -1,6 +1,8 @@
 import { Polyline, PolylineCfg } from '../Polyline';
-import { Line, LinePath, Point } from '../../unit/Point';
+import { Point } from '../../unit/Point';
 import { ScaleInfo } from '../../basic/ScaleInfo';
+import { LinePath } from '../../unit/LinePath';
+import { Line } from '../../unit/Line';
 
 export class RightAnglePolyline extends Polyline {
     startK: number;
