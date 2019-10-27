@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/xiaomingplus/npm-typescript-boilerplate/compare/v0.3.1...v0.4.0) (2019-10-27)
+
+
+### Bug Fixes
+
+* add jest coverage and remove unused import ([f0a93de](https://github.com/xiaomingplus/npm-typescript-boilerplate/commit/f0a93de))
+* extract LimitLine/Line from single file ([ea0b846](https://github.com/xiaomingplus/npm-typescript-boilerplate/commit/ea0b846))
+* extract Line/LinePath/CatMullCurve from single file ([1c478d0](https://github.com/xiaomingplus/npm-typescript-boilerplate/commit/1c478d0))
+* fix line path new method ([4ba3f0d](https://github.com/xiaomingplus/npm-typescript-boilerplate/commit/4ba3f0d))
+* format all ts files ([bf46eaa](https://github.com/xiaomingplus/npm-typescript-boilerplate/commit/bf46eaa))
+
+
+### Features
+
+* modify prettier config ([5dc147a](https://github.com/xiaomingplus/npm-typescript-boilerplate/commit/5dc147a))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/xiaomingplus/npm-typescript-boilerplate/compare/v0.3.0...v0.3.1) (2019-10-26)
 
