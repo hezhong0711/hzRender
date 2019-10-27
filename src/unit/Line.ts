@@ -1,47 +1,6 @@
 import { Point } from './Point';
 
 export class Line {
-    static getLineLimit(start: Point, end: Point) {
-        const line = this.getLine(start, end);
-        line.setLineStart(start);
-        line.setLineEnd(end);
-        return line;
-    }
-
-    static getLine(p1: Point, p2: Point) {
-        const k = Line.calcK(p1, p2);
-        let b: number = 0;
-        if (k != null) {
-            b = p1.y - k * p1.x;
-        }
-        return new Line(k, b, p1);
-    }
-
-    static getLineByStartAndEnd(pStart: Point, pEnd: Point) {
-        const line = this.getLine(pStart, pEnd);
-        line.setLineStart(pStart);
-        line.setLineEnd(pEnd);
-        return line;
-    }
-
-    static getLineByK(p: Point, k: number) {
-        let b: number = 0;
-        if (k != null) {
-            b = p.y - k * p.x;
-        }
-        return new Line(k, b, p);
-    }
-
-    // 计算斜率
-    static calcK(p1: Point, p2: Point) {
-        if (p2.x === p1.x) {
-            return null;
-        }
-        return (p2.y - p1.y) / (p2.x - p1.x);
-    }
-
-    start?: Point;
-    end?: Point;
     point: Point;
     k: number | null;
     b: number = 0;
@@ -52,39 +11,12 @@ export class Line {
         this.b = b;
         this.isKNull = this.k == null;
         this.point = point;
-        this.start = undefined;
-        this.end = undefined;
-    }
-
-    setLineStart(pStart: Point) {
-        this.start = pStart;
-    }
-
-    setLineEnd(pEnd: Point) {
-        this.end = pEnd;
     }
 
     // 判断点和线的距离是否小于一个偏移量
     isPointInLine(point: Point, offset: number = 0.1) {
         const distance = this.calcDistanceFromPointToLine(point);
         return distance <= offset;
-    }
-
-    // 判断点是否在起点和终点之间
-    isPointInLineLimit(point: Point) {
-        let result = true;
-        if (this.start != null && this.end != null) {
-            if (this.isKNull) {
-                result =
-                    (point.y <= this.end.y && point.y >= this.start.y) ||
-                    (point.y <= this.start.y && point.y >= this.end.y);
-            } else {
-                result =
-                    (point.x <= this.end.x && point.x >= this.start.x && this.start.x < this.end.x) ||
-                    (point.x >= this.end.x && point.x <= this.start.x && this.start.x > this.end.x);
-            }
-        }
-        return result;
     }
 
     // 判断是否和线平行
@@ -132,19 +64,7 @@ export class Line {
     calcDistanceFromPointToLine(point: Point) {
         // 计算垂足
         const footPoint = this.calcFootPoint(point);
-        // 如果 垂足在线段上
-        let distance = 10000;
-        if (this.isPointInLineLimit(footPoint)) {
-            // 计算两点的距离
-            distance = point.calcDistance(footPoint);
-        } else {
-            // 计算起点或者终点的距离
-            const d1 = point.calcDistance(this.start as Point);
-            const d2 = point.calcDistance(this.end as Point);
-            distance = d1 > d2 ? d2 : d1;
-        }
-
-        return distance;
+        return point.calcDistance(footPoint);
     }
 
     // 计算点到条线的垂足
@@ -163,5 +83,15 @@ export class Line {
         const y = this.k * x + this.b;
 
         return new Point(x, y);
+    }
+}
+
+export class LineInfo {
+    k: number | null;
+    b: number = 0;
+
+    constructor(k: number | null, b: number) {
+        this.k = k;
+        this.b = b;
     }
 }

@@ -1,7 +1,7 @@
 import EventFul from './EventFul';
 import { ScaleInfo } from './ScaleInfo';
 import { Point } from '../unit/Point';
-import { Line } from '../unit/Line';
+import { LineHelper } from '../factory/LineHelper';
 
 export abstract class Displayable extends EventFul {
     zIndex: number;
@@ -71,19 +71,19 @@ export class VisualSize {
     height: number = 0;
 
     topLine() {
-        return Line.getLineByStartAndEnd(new Point(0, 0), new Point(this.width, 0));
+        return LineHelper.getLineLimit(new Point(0, 0), new Point(this.width, 0));
     }
 
     bottomLine() {
-        return Line.getLineByStartAndEnd(new Point(0, this.height), new Point(this.width, this.width));
+        return LineHelper.getLineLimit(new Point(0, this.height), new Point(this.width, this.width));
     }
 
     leftLine() {
-        return Line.getLineByStartAndEnd(new Point(0, 0), new Point(0, this.width));
+        return LineHelper.getLineLimit(new Point(0, 0), new Point(0, this.width));
     }
 
     rightLine() {
-        return Line.getLineByStartAndEnd(new Point(this.width, 0), new Point(this.width, this.width));
+        return LineHelper.getLineLimit(new Point(this.width, 0), new Point(this.width, this.width));
     }
 }
 

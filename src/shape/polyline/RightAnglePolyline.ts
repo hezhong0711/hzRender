@@ -3,6 +3,7 @@ import { Point } from '../../unit/Point';
 import { ScaleInfo } from '../../basic/ScaleInfo';
 import { LinePath } from '../../unit/LinePath';
 import { Line } from '../../unit/Line';
+import { LineHelper } from '../../factory/LineHelper';
 
 export class RightAnglePolyline extends Polyline {
     startK: number;
@@ -113,11 +114,11 @@ export class RightAnglePolyline extends Polyline {
         const p1: Point = start;
         const p2: Point = end;
         // 垂足1
-        const line1: Line = Line.getLineByK(p2, this.startK);
+        const line1: Line = LineHelper.getLineByK(p2, this.startK);
         const p3: Point = line1.calcFootPoint(p1);
         // 垂足2
 
-        const line2: Line = Line.getLineByK(p1, this.startK);
+        const line2: Line = LineHelper.getLineByK(p1, this.startK);
         const p4: Point = line2.calcFootPoint(p2);
         let p: Point = null;
         if (pFoot && ((p1.x > pFoot.x && p4.x > p1.x) || (p1.x < pFoot.x && p4.x < p1.x))) {

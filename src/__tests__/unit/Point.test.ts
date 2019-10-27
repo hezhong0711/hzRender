@@ -5,7 +5,6 @@ describe('test Point', () => {
     const point = new Point(10, 20);
 
     test('create point', () => {
-        console.log(scaleInfo);
         expect(point.x).toBe(10);
         expect(point.y).toBe(20);
         expect(point.color).toBe('black');
@@ -21,5 +20,24 @@ describe('test Point', () => {
         point.move(20, 30);
         expect(point.x).toBe(30);
         expect(point.y).toBe(50);
+    });
+
+    test('copy point', () => {
+        const copyPoint = Point.copy(point);
+        expect(point.x).toBe(copyPoint.x);
+        expect(point.y).toBe(copyPoint.y);
+        expect(point.color).toBe(copyPoint.color);
+    });
+    test('calculate distance between two points', () => {
+        const p = new Point(0, 0);
+        const p2 = new Point(3, 4);
+        const distance = p.calcDistance(p2);
+        expect(distance).toBe(5);
+    });
+    test('calculate distance when two points are the same', () => {
+        const p = new Point(0, 0);
+        const p2 = new Point(0, 0);
+        const distance = p.calcDistance(p2);
+        expect(distance).toBe(0);
     });
 });

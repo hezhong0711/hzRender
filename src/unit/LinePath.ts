@@ -1,5 +1,5 @@
 import { Point } from './Point';
-import { Line } from './Line';
+import { LineHelper } from '../factory/LineHelper';
 
 export class LinePath {
     start: Point;
@@ -16,9 +16,6 @@ export class LinePath {
     }
 
     toLine() {
-        const line = Line.getLine(this.start, this.end);
-        line.setLineStart(this.start);
-        line.setLineEnd(this.end);
-        return line;
+        return LineHelper.getLineLimit(this.start, this.end);
     }
 }

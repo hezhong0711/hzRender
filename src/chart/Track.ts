@@ -5,6 +5,7 @@ import { ScaleType } from '../basic/Displayable';
 import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline';
 import { ReadType } from './ReadType';
 import { Line } from '../unit/Line';
+import { LineHelper } from '../factory/LineHelper';
 
 const colorList = [
     'rgba(151,0,237,1)',
@@ -55,7 +56,7 @@ export class Track extends Chart {
         });
         this.selfAdaptation.adapt(points);
 
-        const startK = Line.calcK(this.solidLinePoints[0][0], this.solidLinePoints[0][1]);
+        const startK = LineHelper.calcK(this.solidLinePoints[0][0], this.solidLinePoints[0][1]);
         this.drawSolidLine(startK);
         this.drawDashLine(startK);
         this.drawAllPoints();
