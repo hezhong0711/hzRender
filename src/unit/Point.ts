@@ -1,236 +1,236 @@
-import { Coordinate } from '../basic/Coordinate'
-import { ScaleInfo } from '../basic/ScaleInfo'
+import { Coordinate } from '../basic/Coordinate';
+import { ScaleInfo } from '../basic/ScaleInfo';
 
 export class Point extends Coordinate {
     static scale(point: Point, scaleInfo: ScaleInfo) {
-        const x = scaleInfo.scale * point.x + scaleInfo.lastOffset.x
-        const y = scaleInfo.scale * point.y + scaleInfo.lastOffset.y
-        return new Point(x, y, point.color)
+        const x = scaleInfo.scale * point.x + scaleInfo.lastOffset.x;
+        const y = scaleInfo.scale * point.y + scaleInfo.lastOffset.y;
+        return new Point(x, y, point.color);
     }
 
     static copy(point: Point) {
-        return new Point(point.x, point.y, point.color)
+        return new Point(point.x, point.y, point.color);
     }
 
-    color: string
+    color: string;
 
     constructor(x: number, y: number, color?: string) {
-        super(x, y)
-        this.color = color ? color : 'black'
+        super(x, y);
+        this.color = color ? color : 'black';
     }
 
     move(distanceX: number, distanceY: number) {
-        this.x = this.x + distanceX
-        this.y = this.y + distanceY
+        this.x = this.x + distanceX;
+        this.y = this.y + distanceY;
     }
 
     calcDistance(p: Coordinate) {
-        return Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2))
+        return Math.sqrt(Math.pow(this.x - p.x, 2) + Math.pow(this.y - p.y, 2));
     }
 }
 
 export class LinePath {
-    start: Point
-    end: Point
+    start: Point;
+    end: Point;
 
     constructor(start: Point, end: Point) {
-        this.start = Point.copy(start)
-        this.end = Point.copy(end)
+        this.start = Point.copy(start);
+        this.end = Point.copy(end);
     }
 
     move(x: number, y: number) {
-        this.start.move(x, y)
-        this.end.move(x, y)
+        this.start.move(x, y);
+        this.end.move(x, y);
     }
 
     toLine() {
-        const line = Line.getLine(this.start, this.end)
-        line.setLineStart(this.start)
-        line.setLineEnd(this.end)
-        return line
+        const line = Line.getLine(this.start, this.end);
+        line.setLineStart(this.start);
+        line.setLineEnd(this.end);
+        return line;
     }
 }
 
 export class CatMullCurve extends LinePath {
-    ctrl1: Point
-    ctrl2: Point
+    ctrl1: Point;
+    ctrl2: Point;
 
     constructor(start: Point, ctrl1: Point, ctrl2: Point, end: Point) {
-        super(start, end)
-        this.ctrl1 = Point.copy(ctrl1)
-        this.ctrl2 = Point.copy(ctrl2)
+        super(start, end);
+        this.ctrl1 = Point.copy(ctrl1);
+        this.ctrl2 = Point.copy(ctrl2);
     }
 
     move(x: number, y: number) {
-        this.start.move(x, y)
-        this.end.move(x, y)
-        this.ctrl1.move(x, y)
-        this.ctrl2.move(x, y)
+        this.start.move(x, y);
+        this.end.move(x, y);
+        this.ctrl1.move(x, y);
+        this.ctrl2.move(x, y);
     }
 }
 
 export class Line {
     static getLineLimit(start: Point, end: Point) {
-        const line = this.getLine(start, end)
-        line.setLineStart(start)
-        line.setLineEnd(end)
-        return line
+        const line = this.getLine(start, end);
+        line.setLineStart(start);
+        line.setLineEnd(end);
+        return line;
     }
 
     static getLine(p1: Point, p2: Point) {
-        const k = Line.calcK(p1, p2)
-        let b: number = 0
+        const k = Line.calcK(p1, p2);
+        let b: number = 0;
         if (k != null) {
-            b = p1.y - k * p1.x
+            b = p1.y - k * p1.x;
         }
-        return new Line(k, b, p1)
+        return new Line(k, b, p1);
     }
 
     static getLineByStartAndEnd(pStart: Point, pEnd: Point) {
-        const line = this.getLine(pStart, pEnd)
-        line.setLineStart(pStart)
-        line.setLineEnd(pEnd)
-        return line
+        const line = this.getLine(pStart, pEnd);
+        line.setLineStart(pStart);
+        line.setLineEnd(pEnd);
+        return line;
     }
 
     static getLineByK(p: Point, k: number) {
-        let b: number = 0
+        let b: number = 0;
         if (k != null) {
-            b = p.y - k * p.x
+            b = p.y - k * p.x;
         }
-        return new Line(k, b, p)
+        return new Line(k, b, p);
     }
 
     // 计算斜率
     static calcK(p1: Point, p2: Point) {
         if (p2.x === p1.x) {
-            return null
+            return null;
         }
-        return (p2.y - p1.y) / (p2.x - p1.x)
+        return (p2.y - p1.y) / (p2.x - p1.x);
     }
 
-    start?: Point
-    end?: Point
-    point: Point
-    k: number | null
-    b: number = 0
-    isKNull: boolean
+    start?: Point;
+    end?: Point;
+    point: Point;
+    k: number | null;
+    b: number = 0;
+    isKNull: boolean;
 
     constructor(k: number | null, b: number, point: Point) {
-        this.k = k
-        this.b = b
-        this.isKNull = this.k == null
-        this.point = point
-        this.start = undefined
-        this.end = undefined
+        this.k = k;
+        this.b = b;
+        this.isKNull = this.k == null;
+        this.point = point;
+        this.start = undefined;
+        this.end = undefined;
     }
 
     setLineStart(pStart: Point) {
-        this.start = pStart
+        this.start = pStart;
     }
 
     setLineEnd(pEnd: Point) {
-        this.end = pEnd
+        this.end = pEnd;
     }
 
     // 判断点和线的距离是否小于一个偏移量
     isPointInLine(point: Point, offset: number = 0.1) {
-        const distance = this.calcDistanceFromPointToLine(point)
-        return distance <= offset
+        const distance = this.calcDistanceFromPointToLine(point);
+        return distance <= offset;
     }
 
     // 判断点是否在起点和终点之间
     isPointInLineLimit(point: Point) {
-        let result = true
+        let result = true;
         if (this.start != null && this.end != null) {
             if (this.isKNull) {
                 result =
                     (point.y <= this.end.y && point.y >= this.start.y) ||
-                    (point.y <= this.start.y && point.y >= this.end.y)
+                    (point.y <= this.start.y && point.y >= this.end.y);
             } else {
                 result =
                     (point.x <= this.end.x && point.x >= this.start.x && this.start.x < this.end.x) ||
-                    (point.x >= this.end.x && point.x <= this.start.x && this.start.x > this.end.x)
+                    (point.x >= this.end.x && point.x <= this.start.x && this.start.x > this.end.x);
             }
         }
-        return result
+        return result;
     }
 
     // 判断是否和线平行
     isParallelToLine(line: Line) {
-        return (this.isKNull && line.isKNull) || this.k === line.k
+        return (this.isKNull && line.isKNull) || this.k === line.k;
     }
 
     // 计算两条线的交点
     getCrossPointToLine(line: Line, inLimit: boolean = true) {
         // 平行没有交点
         if (this.isParallelToLine(line)) {
-            return null
+            return null;
         }
-        let point: Point | null = null
+        let point: Point | null = null;
 
         if (this.k == null && line.k != null) {
-            const x = this.point.x
-            const y = line.k * x + line.b
-            point = new Point(x, y)
+            const x = this.point.x;
+            const y = line.k * x + line.b;
+            point = new Point(x, y);
         } else if (this.k != null && line.k == null) {
-            const x = line.point.x
-            const y = this.k * x + this.b
-            point = new Point(x, y)
+            const x = line.point.x;
+            const y = this.k * x + this.b;
+            point = new Point(x, y);
         } else if (this.k != null && line.k != null) {
-            const x = (this.b - line.b) / (line.k - this.k)
-            const y = line.k * x + line.b
-            point = new Point(x, y)
+            const x = (this.b - line.b) / (line.k - this.k);
+            const y = line.k * x + line.b;
+            point = new Point(x, y);
         }
 
         if (point == null) {
-            return null
+            return null;
         }
 
         if (inLimit) {
             if (this.isPointInLine(point) && line.isPointInLine(point)) {
-                return point
+                return point;
             } else {
-                return null
+                return null;
             }
         }
-        return point
+        return point;
     }
 
     // 计算点到线的距离
     calcDistanceFromPointToLine(point: Point) {
         // 计算垂足
-        const footPoint = this.calcFootPoint(point)
+        const footPoint = this.calcFootPoint(point);
         // 如果 垂足在线段上
-        let distance = 10000
+        let distance = 10000;
         if (this.isPointInLineLimit(footPoint)) {
             // 计算两点的距离
-            distance = point.calcDistance(footPoint)
+            distance = point.calcDistance(footPoint);
         } else {
             // 计算起点或者终点的距离
-            const d1 = point.calcDistance(this.start as Point)
-            const d2 = point.calcDistance(this.end as Point)
-            distance = d1 > d2 ? d2 : d1
+            const d1 = point.calcDistance(this.start as Point);
+            const d2 = point.calcDistance(this.end as Point);
+            distance = d1 > d2 ? d2 : d1;
         }
 
-        return distance
+        return distance;
     }
 
     // 计算点到条线的垂足
     calcFootPoint(point: Point) {
         if (this.k == null) {
-            return new Point(this.point.x, point.y)
+            return new Point(this.point.x, point.y);
         }
 
         if (this.k === 0) {
-            return new Point(point.x, this.b)
+            return new Point(point.x, this.b);
         }
 
-        const kv = -1 / this.k
-        const bv = point.y - kv * point.x
-        const x = (this.b - bv) / (kv - this.k)
-        const y = this.k * x + this.b
+        const kv = -1 / this.k;
+        const bv = point.y - kv * point.x;
+        const x = (this.b - bv) / (kv - this.k);
+        const y = this.k * x + this.b;
 
-        return new Point(x, y)
+        return new Point(x, y);
     }
 }
