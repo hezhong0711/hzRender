@@ -30,6 +30,7 @@ export class Track extends Chart {
 
     solidLineStyle: PolylineStyle;
     dashLineStyle: PolylineStyle;
+    solidLineHighlightStyle: PolylineStyle;
     circleScaleType?: ScaleType;
     solidLineScaleType?: ScaleType;
     dashLineScaleType?: ScaleType;
@@ -43,6 +44,7 @@ export class Track extends Chart {
         this.selfAdaptation.paddingLeft = cfg.paddingLeft ? cfg.paddingLeft : RADIOUS;
         this.selfAdaptation.paddingBottom = cfg.paddingBottom ? cfg.paddingBottom : RADIOUS;
         this.solidLineStyle = cfg.solidLineStyle ? cfg.solidLineStyle : new PolylineStyle();
+        this.solidLineHighlightStyle = cfg.solidLineHighlightStyle ? cfg.solidLineHighlightStyle : this.solidLineStyle;
         this.dashLineStyle = cfg.dashLineStyle ? cfg.dashLineStyle : new PolylineStyle();
         this.circleScaleType = cfg.circleScaleType ? cfg.circleScaleType : ScaleType.SHAPE;
         this.dashLineScaleType = cfg.dashLineScaleType ? cfg.dashLineScaleType : ScaleType.POSITION;
@@ -105,6 +107,7 @@ export class Track extends Chart {
                 const rap = new RightAnglePolyline({
                     startK,
                     points: adaptPoints,
+                    highlightStyle: this.solidLineHighlightStyle,
                     lineWidth: this.solidLineStyle.lineWidth,
                     smooth: 1,
                     lineColor: this.solidLineStyle.color,
@@ -200,6 +203,7 @@ interface TrackCfg extends ChartCfg {
     data: any;
     onTap?: (e: any) => void;
     solidLineStyle?: PolylineStyle;
+    solidLineHighlightStyle?: PolylineStyle;
     dashLineStyle?: PolylineStyle;
     circleScaleType?: ScaleType;
     solidLineScaleType?: ScaleType;
