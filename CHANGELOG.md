@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/hezhong0711/hzRender/compare/v0.4.0...v0.5.0) (2019-10-29)
+
+
+### Features
+
+* add Text shape ([4399538](https://github.com/hezhong0711/hzRender/commit/4399538))
+* add Track chart config ([ca32206](https://github.com/hezhong0711/hzRender/commit/ca32206))
+* add Track chart solid line highlight style config ([26fba89](https://github.com/hezhong0711/hzRender/commit/26fba89))
+* add Track chart tap offset config and tap event ([852917a](https://github.com/hezhong0711/hzRender/commit/852917a))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/xiaomingplus/npm-typescript-boilerplate/compare/v0.3.1...v0.4.0) (2019-10-27)
 
