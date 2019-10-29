@@ -25,8 +25,8 @@ const MAX_DATA_SIZE = 100;
 
 export class Track extends Chart {
     trackModals: TrackModal[] = [];
-    solidLinePoints: Point[][] = [];
-    dashLinePoints: Point[][] = [];
+    solidLinePoints: TrackModal[][] = [];
+    dashLinePoints: TrackModal[][] = [];
 
     solidLineStyle: PolylineStyle;
     dashLineStyle: PolylineStyle;
@@ -35,7 +35,9 @@ export class Track extends Chart {
     solidLineScaleType?: ScaleType;
     dashLineScaleType?: ScaleType;
 
-    onTap: (e: any) => void;
+    onCircleTap: (e: any) => void;
+    onSolidLineTap: (e: any) => void;
+    solidLineTapOffset: number;
 
     constructor(cfg: TrackCfg) {
         super(cfg);
@@ -49,7 +51,9 @@ export class Track extends Chart {
         this.circleScaleType = cfg.circleScaleType ? cfg.circleScaleType : ScaleType.SHAPE;
         this.dashLineScaleType = cfg.dashLineScaleType ? cfg.dashLineScaleType : ScaleType.POSITION;
         this.solidLineScaleType = cfg.solidLineScaleType ? cfg.solidLineScaleType : ScaleType.POSITION;
-        this.onTap = cfg.onTap;
+        this.onCircleTap = cfg.onCircleTap;
+        this.onSolidLineTap = cfg.onSolidLineTap;
+        this.solidLineTapOffset = cfg.solidLineTapOffset ? cfg.solidLineTapOffset : 2;
         this.process(cfg.data);
     }
 
@@ -68,7 +72,7 @@ export class Track extends Chart {
         });
         this.selfAdaptation.adapt(points);
 
-        const startK = LineHelper.calcK(this.solidLinePoints[0][0], this.solidLinePoints[0][1]);
+        const startK = LineHelper.calcK(this.solidLinePoints[0][0].point, this.solidLinePoints[0][1].point);
         this.drawDashLine(startK);
         this.drawSolidLine(startK);
         this.drawAllPoints();
@@ -88,8 +92,8 @@ export class Track extends Chart {
                     color: modal.point.color,
                     scaleType: this.circleScaleType,
                     onTap: () => {
-                        if (this.onTap) {
-                            this.onTap(modal);
+                        if (this.onCircleTap) {
+                            this.onCircleTap(modal);
                         }
                         console.log('click circle');
                     },
@@ -99,9 +103,9 @@ export class Track extends Chart {
     }
 
     private drawSolidLine(startK: number) {
-        this.solidLinePoints.forEach(points => {
-            const adaptPoints = points.map(p => {
-                return this.selfAdaptation.adaptPoint(p);
+        this.solidLinePoints.forEach(modal => {
+            const adaptPoints = modal.map(p => {
+                return this.selfAdaptation.adaptPoint(p.point);
             });
             if (adaptPoints.length > 1) {
                 const rap = new RightAnglePolyline({
@@ -113,7 +117,11 @@ export class Track extends Chart {
                     lineColor: this.solidLineStyle.color,
                     scaleType: this.solidLineScaleType,
                     clickable: true,
+                    tapOffset: this.solidLineTapOffset,
                     onTap: () => {
+                        if (this.onSolidLineTap) {
+                            this.onSolidLineTap(modal);
+                        }
                         console.log('go to');
                     },
                 });
@@ -123,9 +131,9 @@ export class Track extends Chart {
     }
 
     private drawDashLine(startK: number) {
-        this.dashLinePoints.forEach(points => {
-            const adaptPoints = points.map(p => {
-                return this.selfAdaptation.adaptPoint(p);
+        this.dashLinePoints.forEach(modal => {
+            const adaptPoints = modal.map(m => {
+                return this.selfAdaptation.adaptPoint(m.point);
             });
             if (adaptPoints.length > 1) {
                 this.hz.add(
@@ -150,11 +158,11 @@ export class Track extends Chart {
         for (const modal of this.trackModals) {
             // readType 与上一次 readType相同，加入到上一次的容器中
             if (lastReadType === modal.readType || (lastReadType === ReadType.s && modal.readType === ReadType.s1)) {
-                this.addLinePathPoint(lastReadType, modal.point, idx);
+                this.addLinePathPoint(lastReadType, modal, idx);
             }
             // 如果不相同，则要在上一个容器中添加，然后在另一个容器中新添加意向
             else {
-                this.addLinePathPoint(lastReadType, modal.point, idx);
+                this.addLinePathPoint(lastReadType, modal, idx);
                 switch (modal.readType) {
                     case ReadType.s:
                     case ReadType.s1:
@@ -164,22 +172,22 @@ export class Track extends Chart {
                         idx[1]++;
                         break;
                 }
-                this.addLinePathPoint(modal.readType, modal.point, idx);
+                this.addLinePathPoint(modal.readType, modal, idx);
             }
             lastReadType = modal.readType;
         }
     }
 
-    private addLinePathPoint(readType: ReadType, point: Point, idx: [number, number]) {
+    private addLinePathPoint(readType: ReadType, modal: TrackModal, idx: [number, number]) {
         switch (readType) {
             case ReadType.s:
             case ReadType.s1:
                 {
                     let arr = this.solidLinePoints[idx[0]];
                     if (arr == null) {
-                        arr = [point];
+                        arr = [modal];
                     } else {
-                        arr.push(point);
+                        arr.push(modal);
                     }
                     this.solidLinePoints[idx[0]] = arr;
                 }
@@ -188,9 +196,9 @@ export class Track extends Chart {
                 {
                     let arr = this.dashLinePoints[idx[1]];
                     if (arr == null) {
-                        arr = [point];
+                        arr = [modal];
                     } else {
-                        arr.push(point);
+                        arr.push(modal);
                     }
                     this.dashLinePoints[idx[1]] = arr;
                 }
@@ -201,13 +209,15 @@ export class Track extends Chart {
 
 interface TrackCfg extends ChartCfg {
     data: any;
-    onTap?: (e: any) => void;
+    onCircleTap?: (e: any) => void;
+    onSolidLineTap?: (e: any) => void;
     solidLineStyle?: PolylineStyle;
     solidLineHighlightStyle?: PolylineStyle;
     dashLineStyle?: PolylineStyle;
     circleScaleType?: ScaleType;
     solidLineScaleType?: ScaleType;
     dashLineScaleType?: ScaleType;
+    solidLineTapOffset?: number;
 }
 
 export class TrackModal extends ChartModal {

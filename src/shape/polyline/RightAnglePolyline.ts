@@ -94,7 +94,8 @@ export class RightAnglePolyline extends Polyline {
             } else {
                 context.setLineDash([]);
             }
-            context.setLineWidth(this.isHighlight ? this.highlightStyle.lineWidth : this.lineWidth);
+            const lineWidth = this.isHighlight ? this.highlightStyle.lineWidth : this.lineWidth;
+            context.setLineWidth(this.getScaleLength(lineWidth));
 
             if (i === 0) {
                 context.moveTo(path.start.x, path.start.y);
