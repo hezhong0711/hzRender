@@ -4,7 +4,6 @@ import { Circle } from '../shape/Circle';
 import { ScaleType } from '../basic/Displayable';
 import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline';
 import { ReadType } from './ReadType';
-import { Line } from '../unit/Line';
 import { LineHelper } from '../factory/LineHelper';
 
 const colorList = [
