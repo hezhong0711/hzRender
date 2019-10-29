@@ -75,6 +75,10 @@ export class RightAnglePolyline extends Polyline {
         return scalePaths;
     }
 
+    protected isLineInVisualArea(line: Line): boolean {
+        return true;
+    }
+
     private drawRightAngleLine(context: any) {
         const scalePaths = this.getScalePaths();
         context.beginPath();

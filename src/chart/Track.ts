@@ -5,6 +5,7 @@ import { ScaleType } from '../basic/Displayable';
 import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline';
 import { ReadType } from './ReadType';
 import { LineHelper } from '../factory/LineHelper';
+import { PolylineStyle } from '../shape/Polyline';
 
 const colorList = [
     'rgba(151,0,237,1)',
@@ -20,12 +21,20 @@ const colorList = [
     'rgba(138,184,255,1)',
 ];
 const RADIOUS = 5;
-const MAX_DATA_SIZE = 30;
+const MAX_DATA_SIZE = 100;
 
 export class Track extends Chart {
     trackModals: TrackModal[] = [];
     solidLinePoints: Point[][] = [];
     dashLinePoints: Point[][] = [];
+
+    solidLineStyle: PolylineStyle;
+    dashLineStyle: PolylineStyle;
+    circleScaleType?: ScaleType;
+    solidLineScaleType?: ScaleType;
+    dashLineScaleType?: ScaleType;
+
+    onTap: (e: any) => void;
 
     constructor(cfg: TrackCfg) {
         super(cfg);
@@ -33,11 +42,13 @@ export class Track extends Chart {
         this.selfAdaptation.paddingTop = cfg.paddingTop ? cfg.paddingTop : RADIOUS;
         this.selfAdaptation.paddingLeft = cfg.paddingLeft ? cfg.paddingLeft : RADIOUS;
         this.selfAdaptation.paddingBottom = cfg.paddingBottom ? cfg.paddingBottom : RADIOUS;
+        this.solidLineStyle = cfg.solidLineStyle ? cfg.solidLineStyle : new PolylineStyle();
+        this.dashLineStyle = cfg.dashLineStyle ? cfg.dashLineStyle : new PolylineStyle();
+        this.circleScaleType = cfg.circleScaleType ? cfg.circleScaleType : ScaleType.SHAPE;
+        this.dashLineScaleType = cfg.dashLineScaleType ? cfg.dashLineScaleType : ScaleType.POSITION;
+        this.solidLineScaleType = cfg.solidLineScaleType ? cfg.solidLineScaleType : ScaleType.POSITION;
+        this.onTap = cfg.onTap;
         this.process(cfg.data);
-
-        console.log(this.trackModals);
-        console.log(this.solidLinePoints);
-        console.log(this.dashLinePoints);
     }
 
     process(data: any[]) {
@@ -56,8 +67,8 @@ export class Track extends Chart {
         this.selfAdaptation.adapt(points);
 
         const startK = LineHelper.calcK(this.solidLinePoints[0][0], this.solidLinePoints[0][1]);
-        this.drawSolidLine(startK);
         this.drawDashLine(startK);
+        this.drawSolidLine(startK);
         this.drawAllPoints();
     }
 
@@ -73,8 +84,11 @@ export class Track extends Chart {
                     cy: modal.point.y * this.selfAdaptation.scaleY + this.selfAdaptation.offsetY,
                     r: RADIOUS,
                     color: modal.point.color,
-                    scaleType: ScaleType.POSITION,
+                    scaleType: this.circleScaleType,
                     onTap: () => {
+                        if (this.onTap) {
+                            this.onTap(modal);
+                        }
                         console.log('click circle');
                     },
                 }),
@@ -91,12 +105,10 @@ export class Track extends Chart {
                 const rap = new RightAnglePolyline({
                     startK,
                     points: adaptPoints,
-                    lineWidth: 2,
+                    lineWidth: this.solidLineStyle.lineWidth,
                     smooth: 1,
-                    // lineGradient: true,
-                    // isDash: true,
-                    lineColor: 'blue',
-                    scaleType: ScaleType.POSITION,
+                    lineColor: this.solidLineStyle.color,
+                    scaleType: this.solidLineScaleType,
                     clickable: true,
                     onTap: () => {
                         console.log('go to');
@@ -117,12 +129,11 @@ export class Track extends Chart {
                     new RightAnglePolyline({
                         startK,
                         points: adaptPoints,
-                        lineWidth: 2,
+                        lineWidth: this.dashLineStyle.lineWidth,
                         smooth: 1,
-                        // lineGradient: true,
                         isDash: true,
-                        lineColor: 'blue',
-                        scaleType: ScaleType.POSITION,
+                        lineColor: this.dashLineStyle.color,
+                        scaleType: this.dashLineScaleType,
                         onTap: () => console.log('click polyline'),
                     }),
                 );
@@ -187,16 +198,22 @@ export class Track extends Chart {
 
 interface TrackCfg extends ChartCfg {
     data: any;
+    onTap?: (e: any) => void;
+    solidLineStyle?: PolylineStyle;
+    dashLineStyle?: PolylineStyle;
+    circleScaleType?: ScaleType;
+    solidLineScaleType?: ScaleType;
+    dashLineScaleType?: ScaleType;
 }
 
 export class TrackModal extends ChartModal {
     static mapper(data: TrackDataModal) {
         const modal = new TrackModal();
-        modal.point = new Point(data.list_x, data.list_y, colorList[data.list_type]);
-        modal.title = data.list_title;
-        modal.content = data.list_content;
+        modal.point = new Point(data.list_info.list_x, data.list_info.list_y, colorList[data.list_info.list_type]);
+        modal.title = data.list_info.list_title.title_detail;
+        // modal.content = data.list_content;
         modal.readType = data.read_type as ReadType;
-        modal.id = data.list_id;
+        modal.id = data.list_info.list_id;
         return modal;
     }
 
@@ -208,11 +225,32 @@ export class TrackModal extends ChartModal {
 }
 
 export class TrackDataModal {
-    list_id: string;
+    delete_status: number;
+    list_info: TrackListInfo;
     read_type: string;
-    list_title: string;
-    list_content: string;
+    user_info: any;
+
+    // list_id: string;
+    // list_title: string;
+    // list_content: string;
+    // list_x: number;
+    // list_y: number;
+    // list_type: number;
+}
+
+export class TrackListInfo {
+    delete_status: number;
+    list_content: [];
+    list_first_link_num: number;
+    list_id: string;
+    list_title: TrackListTitle;
+    list_type: number;
     list_x: number;
     list_y: number;
-    list_type: number;
+    user_id: string;
+}
+
+export class TrackListTitle {
+    link: [];
+    title_detail: string;
 }
