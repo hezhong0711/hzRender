@@ -228,6 +228,7 @@ export class TrackModal extends ChartModal {
         // modal.content = data.list_content;
         modal.readType = data.read_type as ReadType;
         modal.id = data.list_info.list_id;
+        modal.originData = data;
         return modal;
     }
 
@@ -236,6 +237,7 @@ export class TrackModal extends ChartModal {
     content: string;
     id: string;
     readType: ReadType;
+    originData: TrackDataModal;
 }
 
 export class TrackDataModal {
