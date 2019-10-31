@@ -1,6 +1,7 @@
 import { Chart, ChartCfg, ChartModal } from '../basic/Chart';
 import { Point } from '../unit/Point';
 import { Circle } from '../shape/Circle';
+import { Text } from '../shape/Text';
 import { ScaleType } from '../basic/Displayable';
 import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline';
 import { ReadType } from './ReadType';
@@ -73,6 +74,7 @@ export class Track extends Chart {
         this.selfAdaptation.adapt(points);
 
         const startK = LineHelper.calcK(this.solidLinePoints[0][0].point, this.solidLinePoints[0][1].point);
+        this.drawText();
         this.drawDashLine(startK);
         this.drawSolidLine(startK);
         this.drawAllPoints();
@@ -80,6 +82,26 @@ export class Track extends Chart {
 
     render() {
         this.hz.render();
+    }
+
+    private drawText() {
+        for (const modal of this.trackModals) {
+            const position = new Point(
+                modal.point.x * this.selfAdaptation.scaleX + this.selfAdaptation.offsetX,
+                modal.point.y * this.selfAdaptation.scaleY + this.selfAdaptation.offsetY,
+            );
+            this.hz.add(
+                new Text({
+                    position,
+                    text: modal.title,
+                    fontSize: 12,
+                    color: '#90A5CE',
+                    textAlign: 'center',
+                    scaleType: ScaleType.POSITION,
+                    maxLength: 7,
+                }),
+            );
+        }
     }
 
     private drawAllPoints() {
