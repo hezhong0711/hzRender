@@ -11,6 +11,8 @@ export abstract class Displayable extends EventFul {
     scaleInfo: ScaleInfo = new ScaleInfo();
     scaleType: ScaleType;
     visualSize: VisualSize = new VisualSize();
+    selected: boolean = false;
+    selectable: boolean;
 
     protected constructor(cfg: DisplayableCfg) {
         super();
@@ -19,6 +21,7 @@ export abstract class Displayable extends EventFul {
         this.onPan = cfg.onPan;
         this.onScale = cfg.onScale;
         this.scaleType = cfg.scaleType ? cfg.scaleType : ScaleType.NONE;
+        this.selectable = cfg.selectable ? cfg.selectable : false;
     }
 
     abstract draw(context: any, scaleInfo?: ScaleInfo): void;
@@ -36,10 +39,15 @@ export abstract class Displayable extends EventFul {
 
     abstract pan(scaleInfo: ScaleInfo): void;
 
-    unTap() {}
+    unTap() {
+        this.selected = false;
+    }
 
     tap() {
         console.log('123123');
+        if (this.selectable) {
+            this.selected = !this.selected;
+        }
         this.onTap();
     }
 
@@ -65,6 +73,7 @@ export interface DisplayableCfg {
     onPan?: (x: number, y: number) => void;
     onScale?: () => void;
     scaleType?: ScaleType; // 缩放类型
+    selectable?: boolean; // 是否可以选中
 }
 
 export class VisualSize {

@@ -25,6 +25,16 @@ export class Circle extends Displayable {
         context.arc(scaleC.x, scaleC.y, scaleR, 0, 2 * Math.PI);
         context.setFillStyle(this.color);
         context.fill();
+
+        if (this.selected) {
+            const colorCfg = this.color.split(',');
+            colorCfg.splice(colorCfg.length - 1, 1, '0.2)');
+            const color = colorCfg.join(',');
+            context.beginPath();
+            context.setFillStyle(color);
+            context.arc(scaleC.x, scaleC.y, scaleR + 5, 0, Math.PI * 2);
+            context.fill();
+        }
     }
 
     contain(x: number, y: number): boolean {

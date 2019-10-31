@@ -7,11 +7,13 @@ import { ScaleType } from '../basic/Displayable';
 export class CommaChart extends Chart {
     commaModals: CommaModal[];
     onCommaTap: (e: any) => void;
+    commaSelected: boolean = false;
 
     constructor(cfg: CommaChartCfg) {
         super(cfg);
         this.commaModals = cfg.data;
         this.onCommaTap = cfg.onCommaTap;
+        this.commaSelected = cfg.commaSelected ? cfg.commaSelected : false;
         this.process();
     }
 
@@ -39,6 +41,7 @@ export class CommaChart extends Chart {
                     point: modal.point,
                     color: modal.color,
                     scaleType: ScaleType.POSITION,
+                    selectable: this.commaSelected,
                     onTap: () => {
                         console.log('click comma');
                         if (this.onCommaTap) {
@@ -71,6 +74,7 @@ export class CommaChart extends Chart {
 interface CommaChartCfg extends ChartCfg {
     data: any;
     onCommaTap?: (e: any) => void;
+    commaSelected?: boolean;
 }
 
 interface CommaModal {

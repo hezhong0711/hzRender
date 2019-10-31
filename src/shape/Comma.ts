@@ -69,6 +69,16 @@ export class Comma extends Displayable {
         );
         context.fill();
         context.closePath();
+
+        if (this.selected) {
+            const colorCfg = this.color.split(',');
+            colorCfg.splice(colorCfg.length - 1, 1, '0.2)');
+            const color = colorCfg.join(',');
+            context.beginPath();
+            context.setFillStyle(color);
+            context.arc(scalePoint.x, scalePoint.y, (this.baseR / this.baseScale) * scaleR + 10, 0, Math.PI * 2);
+            context.fill();
+        }
     }
 
     inVisualArea(params?: any): boolean {
