@@ -17,7 +17,10 @@ export class Comma extends Displayable {
     }
 
     contain(x: number, y: number): boolean {
-        return false;
+        const r = 20;
+        if (x > this.point.x - r && x < this.point.x + r && y > this.point.y - r && y < this.point.y + r) {
+            return true;
+        }
     }
 
     draw(context: any, scaleInfo?: ScaleInfo): void {
@@ -72,7 +75,9 @@ export class Comma extends Displayable {
         return true;
     }
 
-    pan(scaleInfo: ScaleInfo): void {}
+    pan(scaleInfo: ScaleInfo): void {
+        this.point.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+    }
 }
 
 export interface CommaCfg extends DisplayableCfg {

@@ -15,6 +15,10 @@ export class TouchEvent {
     private lastTimeStamp: number = 0;
 
     constructor(private id: string) {
+        uni.$off(EventFul.getEventName(EventType.onTouchStart, this.id));
+        uni.$off(EventFul.getEventName(EventType.onTouchEnd, this.id));
+        uni.$off(EventFul.getEventName(EventType.onTouchEnd, this.id));
+
         uni.$on(EventFul.getEventName(EventType.onTouchStart, this.id), event => {
             this.anyTouch.catchEvent(this.mapTouchEvent(event));
         });
