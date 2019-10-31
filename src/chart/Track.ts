@@ -41,6 +41,7 @@ export class Track extends Chart {
     solidLineTapOffset: number;
     circleSelected: boolean = false;
     circleRadious: number;
+    solidLineClickable: boolean;
 
     constructor(cfg: TrackCfg) {
         super(cfg);
@@ -59,6 +60,7 @@ export class Track extends Chart {
         this.solidLineTapOffset = cfg.solidLineTapOffset ? cfg.solidLineTapOffset : 2;
         this.circleSelected = cfg.circleSelected ? cfg.circleSelected : false;
         this.circleRadious = cfg.circleRadious ? cfg.circleRadious : RADIOUS;
+        this.solidLineClickable = cfg.solidLineClickable !== undefined ? cfg.solidLineClickable : true;
         this.process(cfg.data);
     }
 
@@ -143,7 +145,7 @@ export class Track extends Chart {
                     smooth: 1,
                     lineColor: this.solidLineStyle.color,
                     scaleType: this.solidLineScaleType,
-                    clickable: true,
+                    clickable: this.solidLineClickable,
                     tapOffset: this.solidLineTapOffset,
                     onTap: () => {
                         if (this.onSolidLineTap) {
@@ -247,6 +249,7 @@ interface TrackCfg extends ChartCfg {
     solidLineTapOffset?: number;
     circleSelected?: boolean;
     circleRadious?: number;
+    solidLineClickable?: boolean;
 }
 
 export class TrackModal extends ChartModal {
