@@ -40,6 +40,7 @@ export class Track extends Chart {
     onSolidLineTap: (e: any) => void;
     solidLineTapOffset: number;
     circleSelected: boolean = false;
+    circleRadious: number;
 
     constructor(cfg: TrackCfg) {
         super(cfg);
@@ -57,6 +58,7 @@ export class Track extends Chart {
         this.onSolidLineTap = cfg.onSolidLineTap;
         this.solidLineTapOffset = cfg.solidLineTapOffset ? cfg.solidLineTapOffset : 2;
         this.circleSelected = cfg.circleSelected ? cfg.circleSelected : false;
+        this.circleRadious = cfg.circleRadious ? cfg.circleRadious : RADIOUS;
         this.process(cfg.data);
     }
 
@@ -112,7 +114,7 @@ export class Track extends Chart {
                 new Circle({
                     cx: modal.point.x * this.selfAdaptation.scaleX + this.selfAdaptation.offsetX,
                     cy: modal.point.y * this.selfAdaptation.scaleY + this.selfAdaptation.offsetY,
-                    r: RADIOUS,
+                    r: this.circleRadious,
                     color: modal.point.color,
                     scaleType: this.circleScaleType,
                     selectable: this.circleSelected,
@@ -244,6 +246,7 @@ interface TrackCfg extends ChartCfg {
     dashLineScaleType?: ScaleType;
     solidLineTapOffset?: number;
     circleSelected?: boolean;
+    circleRadious?: number;
 }
 
 export class TrackModal extends ChartModal {
