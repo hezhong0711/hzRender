@@ -23,8 +23,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "any-touch": "^0.4.11",
-    "lodash": "^4.17.15"
+    "any-touch": "^0.4.11"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
