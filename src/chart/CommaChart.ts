@@ -1,6 +1,7 @@
 import { Chart, ChartCfg } from '../basic/Chart';
 import { Point } from '../unit/Point';
 import { Comma } from '../shape/Comma';
+import { Text } from '../shape/Text';
 import { ScaleType } from '../basic/Displayable';
 
 export class CommaChart extends Chart {

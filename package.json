@@ -1,6 +1,6 @@
 {
   "name": "hzrender",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "uni-app canvas 库",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -42,5 +42,8 @@
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "typescript": "^3.1.6"
-  }
+  },
+  "files": [
+    "lib"
+  ]
 }

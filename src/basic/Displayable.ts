@@ -61,6 +61,7 @@ export abstract class Displayable extends EventFul {
 export interface DisplayableCfg {
     zIndex?: number;
     onTap?: () => void;
+    onUnTap?: () => void;
     onPan?: (x: number, y: number) => void;
     onScale?: () => void;
     scaleType?: ScaleType; // 缩放类型

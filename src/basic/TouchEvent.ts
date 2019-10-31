@@ -135,6 +135,7 @@ export class TouchEvent {
 
 export interface TouchEventCfg {
     scalable?: boolean;
+    onUnTap?: () => void;
 }
 
 enum GestureStatus {

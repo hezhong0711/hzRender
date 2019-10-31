@@ -8,6 +8,7 @@ export class hzRender {
     touchEventCfg?: TouchEventCfg;
 
     touchEvent: TouchEvent | undefined = undefined;
+
     private list: Displayable[] = [];
     private context: CanvasContext;
 
@@ -77,6 +78,9 @@ export class hzRender {
             } else {
                 obj.unTap();
             }
+        }
+        if (!hasFindOne && this.touchEventCfg.onUnTap) {
+            this.touchEventCfg.onUnTap();
         }
         this.render();
     }
