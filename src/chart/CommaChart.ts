@@ -24,6 +24,7 @@ export class CommaChart extends Chart {
         });
         this.selfAdaptation.adapt(points);
 
+        this.drawText();
         this.drawComma();
     }
 
@@ -37,13 +38,30 @@ export class CommaChart extends Chart {
                 new Comma({
                     point: modal.point,
                     color: modal.color,
-                    scaleType: ScaleType.SHAPE,
+                    scaleType: ScaleType.POSITION,
                     onTap: () => {
                         console.log('click comma');
                         if (this.onCommaTap) {
                             this.onCommaTap(modal);
                         }
                     },
+                }),
+            );
+        });
+    }
+
+    private drawText() {
+        this.commaModals.forEach(modal => {
+            const position = new Point(modal.point.x, modal.point.y);
+            this.hz.add(
+                new Text({
+                    position,
+                    text: modal.text,
+                    fontSize: 12,
+                    color: '#90A5CE',
+                    textAlign: 'center',
+                    scaleType: ScaleType.POSITION,
+                    maxLength: 7,
                 }),
             );
         });

@@ -9,6 +9,7 @@ export class Text extends Displayable {
     textAlign: 'left' | 'center' | 'right';
     color: string;
     maxLength: number;
+    offset: TextOffsetCfg;
 
     constructor(cfg: TextCfg) {
         super(cfg);
@@ -18,6 +19,7 @@ export class Text extends Displayable {
         this.textAlign = cfg.textAlign ? this.textAlign : 'center';
         this.color = cfg.color ? cfg.color : 'black';
         this.maxLength = cfg.maxLength ? cfg.maxLength : 1000;
+        this.offset = cfg.offset ? cfg.offset : { offsetX: 0, offsetY: 30 };
     }
 
     contain(x: number, y: number): boolean {
@@ -33,7 +35,8 @@ export class Text extends Displayable {
             maxText = this.text.substring(0, this.maxLength) + '...';
         }
         context.setTextAlign(this.textAlign);
-        context.fillText(maxText, this.position.x, this.position.y);
+        const scalePosition = this.getScalePoint(this.position);
+        context.fillText(maxText, scalePosition.x + this.offset.offsetX, scalePosition.y + this.offset.offsetY);
     }
 
     inVisualArea(params?: any): boolean {
@@ -52,4 +55,10 @@ export interface TextCfg extends DisplayableCfg {
     textAlign: 'left' | 'center' | 'right';
     color: string;
     maxLength: number;
+    offset?: TextOffsetCfg;
+}
+
+export interface TextOffsetCfg {
+    offsetX: number;
+    offsetY: number;
 }
