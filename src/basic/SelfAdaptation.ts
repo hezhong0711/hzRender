@@ -61,4 +61,10 @@ export interface SelfAdaptationCfg {
     paddingBottom?: number;
     paddingLeft?: number;
     paddingRight?: number;
+    adaptationType?: SelfAdaptationType.FREE;
+}
+
+export enum SelfAdaptationType {
+    FIXED,
+    FREE,
 }

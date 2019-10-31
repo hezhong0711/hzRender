@@ -36,7 +36,7 @@ export class Track extends Chart {
     solidLineScaleType?: ScaleType;
     dashLineScaleType?: ScaleType;
 
-    onCircleTap: (e: any) => void;
+    onCircleTap: (e: any, i: number) => void;
     onSolidLineTap: (e: any) => void;
     solidLineTapOffset: number;
     circleSelected: boolean = false;
@@ -45,21 +45,22 @@ export class Track extends Chart {
 
     constructor(cfg: TrackCfg) {
         super(cfg);
-        this.selfAdaptation.paddingRight = cfg.paddingRight ? cfg.paddingRight : RADIOUS;
-        this.selfAdaptation.paddingTop = cfg.paddingTop ? cfg.paddingTop : RADIOUS;
-        this.selfAdaptation.paddingLeft = cfg.paddingLeft ? cfg.paddingLeft : RADIOUS;
-        this.selfAdaptation.paddingBottom = cfg.paddingBottom ? cfg.paddingBottom : RADIOUS;
-        this.solidLineStyle = cfg.solidLineStyle ? cfg.solidLineStyle : new PolylineStyle();
-        this.solidLineHighlightStyle = cfg.solidLineHighlightStyle ? cfg.solidLineHighlightStyle : this.solidLineStyle;
-        this.dashLineStyle = cfg.dashLineStyle ? cfg.dashLineStyle : new PolylineStyle();
-        this.circleScaleType = cfg.circleScaleType ? cfg.circleScaleType : ScaleType.SHAPE;
-        this.dashLineScaleType = cfg.dashLineScaleType ? cfg.dashLineScaleType : ScaleType.POSITION;
-        this.solidLineScaleType = cfg.solidLineScaleType ? cfg.solidLineScaleType : ScaleType.POSITION;
+        this.selfAdaptation.paddingRight = cfg.paddingRight !== undefined ? cfg.paddingRight : RADIOUS;
+        this.selfAdaptation.paddingTop = cfg.paddingTop !== undefined ? cfg.paddingTop : RADIOUS;
+        this.selfAdaptation.paddingLeft = cfg.paddingLeft !== undefined ? cfg.paddingLeft : RADIOUS;
+        this.selfAdaptation.paddingBottom = cfg.paddingBottom !== undefined ? cfg.paddingBottom : RADIOUS;
+        this.solidLineStyle = cfg.solidLineStyle !== undefined ? cfg.solidLineStyle : new PolylineStyle();
+        this.solidLineHighlightStyle =
+            cfg.solidLineHighlightStyle !== undefined ? cfg.solidLineHighlightStyle : this.solidLineStyle;
+        this.dashLineStyle = cfg.dashLineStyle !== undefined ? cfg.dashLineStyle : new PolylineStyle();
+        this.circleScaleType = cfg.circleScaleType !== undefined ? cfg.circleScaleType : ScaleType.SHAPE;
+        this.dashLineScaleType = cfg.dashLineScaleType !== undefined ? cfg.dashLineScaleType : ScaleType.POSITION;
+        this.solidLineScaleType = cfg.solidLineScaleType !== undefined ? cfg.solidLineScaleType : ScaleType.POSITION;
         this.onCircleTap = cfg.onCircleTap;
         this.onSolidLineTap = cfg.onSolidLineTap;
-        this.solidLineTapOffset = cfg.solidLineTapOffset ? cfg.solidLineTapOffset : 2;
-        this.circleSelected = cfg.circleSelected ? cfg.circleSelected : false;
-        this.circleRadious = cfg.circleRadious ? cfg.circleRadious : RADIOUS;
+        this.solidLineTapOffset = cfg.solidLineTapOffset !== undefined ? cfg.solidLineTapOffset : 2;
+        this.circleSelected = cfg.circleSelected !== undefined ? cfg.circleSelected : false;
+        this.circleRadious = cfg.circleRadious !== undefined ? cfg.circleRadious : RADIOUS;
         this.solidLineClickable = cfg.solidLineClickable !== undefined ? cfg.solidLineClickable : true;
         this.process(cfg.data);
     }
@@ -77,13 +78,17 @@ export class Track extends Chart {
         const points = this.trackModals.map(v => {
             return v.point;
         });
-        this.selfAdaptation.adapt(points);
-
-        const startK = LineHelper.calcK(this.solidLinePoints[0][0].point, this.solidLinePoints[0][1].point);
-        this.drawText();
-        this.drawDashLine(startK);
-        this.drawSolidLine(startK);
-        this.drawAllPoints();
+        if (points.length === 1) {
+            this.drawText();
+            this.drawAllPoints();
+        } else {
+            this.selfAdaptation.adapt(points);
+            const startK = LineHelper.calcK(this.solidLinePoints[0][0].point, this.solidLinePoints[0][1].point);
+            this.drawText();
+            this.drawDashLine(startK);
+            this.drawSolidLine(startK);
+            this.drawAllPoints();
+        }
     }
 
     render() {
@@ -103,7 +108,7 @@ export class Track extends Chart {
                     fontSize: 12,
                     color: '#90A5CE',
                     textAlign: 'center',
-                    scaleType: ScaleType.POSITION,
+                    scaleType: this.circleScaleType,
                     maxLength: 7,
                 }),
             );
@@ -111,7 +116,8 @@ export class Track extends Chart {
     }
 
     private drawAllPoints() {
-        for (const modal of this.trackModals) {
+        for (let i = 0; i < this.trackModals.length; i++) {
+            const modal = this.trackModals[i];
             this.hz.add(
                 new Circle({
                     cx: modal.point.x * this.selfAdaptation.scaleX + this.selfAdaptation.offsetX,
@@ -122,7 +128,7 @@ export class Track extends Chart {
                     selectable: this.circleSelected,
                     onTap: () => {
                         if (this.onCircleTap) {
-                            this.onCircleTap(modal);
+                            this.onCircleTap(modal, i);
                         }
                         console.log('click circle');
                     },

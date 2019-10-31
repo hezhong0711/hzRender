@@ -20,8 +20,8 @@ export abstract class Displayable extends EventFul {
         this.onTap = cfg.onTap;
         this.onPan = cfg.onPan;
         this.onScale = cfg.onScale;
-        this.scaleType = cfg.scaleType ? cfg.scaleType : ScaleType.NONE;
-        this.selectable = cfg.selectable ? cfg.selectable : false;
+        this.scaleType = cfg.scaleType !== undefined ? cfg.scaleType : ScaleType.NONE;
+        this.selectable = cfg.selectable !== undefined ? cfg.selectable : false;
     }
 
     abstract draw(context: any, scaleInfo?: ScaleInfo): void;
