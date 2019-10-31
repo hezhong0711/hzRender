@@ -19,14 +19,16 @@ export class SelfAdaptation {
     scaleY: number = 1;
     offsetX: number = 0;
     offsetY: number = 0;
+    adaptationType: SelfAdaptationType;
 
     constructor(cfg: SelfAdaptationCfg) {
         this.width = cfg.width;
         this.height = cfg.height;
-        this.paddingTop = cfg.paddingTop ? cfg.paddingTop : 0;
-        this.paddingBottom = cfg.paddingBottom ? cfg.paddingBottom : 0;
-        this.paddingLeft = cfg.paddingLeft ? cfg.paddingLeft : 0;
-        this.paddingRight = cfg.paddingRight ? cfg.paddingRight : 0;
+        this.paddingTop = cfg.paddingTop !== undefined ? cfg.paddingTop : 0;
+        this.paddingBottom = cfg.paddingBottom !== undefined ? cfg.paddingBottom : 0;
+        this.paddingLeft = cfg.paddingLeft !== undefined ? cfg.paddingLeft : 0;
+        this.paddingRight = cfg.paddingRight !== undefined ? cfg.paddingRight : 0;
+        this.adaptationType = cfg.adaptationType !== undefined ? cfg.adaptationType : SelfAdaptationType.FREE;
     }
 
     adapt(points: Point[]) {
@@ -40,11 +42,26 @@ export class SelfAdaptation {
             minY = SelfAdaptation.getMin(minY, point.y);
             maxY = SelfAdaptation.getMax(maxY, point.y);
         }
-        const deltaX = maxX - minX;
-        const deltaY = maxY - minY;
+        let deltaX = maxX - minX;
+        let deltaY = maxY - minY;
 
-        this.scaleX = deltaX === 0 ? 1 : (this.width - this.paddingLeft - this.paddingRight) / (maxX - minX);
-        this.scaleY = deltaY === 0 ? 1 : (this.height - this.paddingTop - this.paddingBottom) / (maxY - minY);
+        switch (this.adaptationType) {
+            case SelfAdaptationType.NONE:
+                this.scaleX = 1;
+                this.scaleY = 1;
+                break;
+            case SelfAdaptationType.FIXED:
+                deltaX = SelfAdaptation.getMin(deltaX, deltaY);
+                deltaY = deltaX;
+                this.scaleX = deltaX === 0 ? 1 : (this.width - this.paddingLeft - this.paddingRight) / (maxX - minX);
+                this.scaleY = deltaY === 0 ? 1 : (this.height - this.paddingTop - this.paddingBottom) / (maxY - minY);
+                break;
+            case SelfAdaptationType.FREE:
+                this.scaleX = deltaX === 0 ? 1 : (this.width - this.paddingLeft - this.paddingRight) / (maxX - minX);
+                this.scaleY = deltaY === 0 ? 1 : (this.height - this.paddingTop - this.paddingBottom) / (maxY - minY);
+                break;
+        }
+
         this.offsetX = this.paddingLeft - minX * this.scaleX;
         this.offsetY = this.paddingTop - minY * this.scaleY;
     }
@@ -61,10 +78,11 @@ export interface SelfAdaptationCfg {
     paddingBottom?: number;
     paddingLeft?: number;
     paddingRight?: number;
-    adaptationType?: SelfAdaptationType.FREE;
+    adaptationType?: SelfAdaptationType;
 }
 
 export enum SelfAdaptationType {
+    NONE,
     FIXED,
     FREE,
 }

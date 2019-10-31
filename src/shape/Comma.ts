@@ -18,9 +18,10 @@ export class Comma extends Displayable {
 
     contain(x: number, y: number): boolean {
         const r = 20;
-        if (x > this.point.x - r && x < this.point.x + r && y > this.point.y - r && y < this.point.y + r) {
-            return true;
-        }
+        const p1 = new Point(x, y);
+        const p2 = this.getScalePoint(this.point);
+        const distance = p1.calcDistance(p2);
+        return distance <= this.getScaleLength(r);
     }
 
     draw(context: any, scaleInfo?: ScaleInfo): void {

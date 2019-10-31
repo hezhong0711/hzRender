@@ -19,14 +19,14 @@ export abstract class Polyline extends Displayable {
     constructor(cfg: PolylineCfg) {
         super(cfg);
         this.points = cfg.points;
-        this.smooth = cfg.smooth ? cfg.smooth : 0;
-        this.lineWidth = cfg.lineWidth ? cfg.lineWidth : 1;
-        this.lineGradient = cfg.lineGradient ? cfg.lineGradient : false;
-        this.lineColor = cfg.lineColor ? cfg.lineColor : 'black';
-        this.isDash = cfg.isDash ? cfg.isDash : false;
-        this.tapOffset = cfg.tapOffset ? cfg.tapOffset : 2;
-        this.highlightStyle = cfg.highlightStyle ? cfg.highlightStyle : new PolylineStyle();
-        this.clickable = cfg.clickable ? cfg.clickable : false;
+        this.smooth = cfg.smooth !== undefined ? cfg.smooth : 0;
+        this.lineWidth = cfg.lineWidth !== undefined ? cfg.lineWidth : 1;
+        this.lineGradient = cfg.lineGradient !== undefined ? cfg.lineGradient : false;
+        this.lineColor = cfg.lineColor !== undefined ? cfg.lineColor : 'black';
+        this.isDash = cfg.isDash !== undefined ? cfg.isDash : false;
+        this.tapOffset = cfg.tapOffset !== undefined ? cfg.tapOffset : 2;
+        this.highlightStyle = cfg.highlightStyle !== undefined ? cfg.highlightStyle : new PolylineStyle();
+        this.clickable = cfg.clickable !== undefined ? cfg.clickable : false;
     }
 
     contain(x: number, y: number): boolean {
