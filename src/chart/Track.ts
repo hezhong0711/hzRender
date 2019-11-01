@@ -275,7 +275,6 @@ export class TrackModal extends ChartModal {
     content: string;
     id: string;
     readType: ReadType;
-    originData: TrackDataModal;
 }
 
 export class TrackDataModal {

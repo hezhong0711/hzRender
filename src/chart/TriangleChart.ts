@@ -4,14 +4,14 @@ import { Comma } from '../shape/Comma';
 import { Text } from '../shape/Text';
 import { ScaleType } from '../basic/Displayable';
 
-export class CommaChart extends Chart {
-    commaModals: CommaModal[];
+export class TriangleChart extends Chart {
+    modals: TriangleModal[];
     onCommaTap: (e: any) => void;
     commaSelected: boolean = false;
 
-    constructor(cfg: CommaChartCfg) {
+    constructor(cfg: TriangleChartCfg) {
         super(cfg);
-        this.commaModals = cfg.data;
+        this.modals = cfg.data;
         this.onCommaTap = cfg.onCommaTap;
         this.commaSelected = cfg.commaSelected ? cfg.commaSelected : false;
         this.process();
@@ -21,7 +21,7 @@ export class CommaChart extends Chart {
         // 转换数据
 
         // 自适应计算
-        const points = this.commaModals.map(v => {
+        const points = this.modals.map(v => {
             return v.point;
         });
         this.selfAdaptation.adapt(points);
@@ -35,7 +35,7 @@ export class CommaChart extends Chart {
     }
 
     private drawComma() {
-        this.commaModals.forEach(modal => {
+        this.modals.forEach(modal => {
             this.hz.add(
                 new Comma({
                     point: modal.point,
@@ -54,7 +54,7 @@ export class CommaChart extends Chart {
     }
 
     private drawText() {
-        this.commaModals.forEach(modal => {
+        this.modals.forEach(modal => {
             const position = new Point(modal.point.x, modal.point.y);
             this.hz.add(
                 new Text({
@@ -71,15 +71,14 @@ export class CommaChart extends Chart {
     }
 }
 
-interface CommaChartCfg extends ChartCfg {
+interface TriangleChartCfg extends ChartCfg {
     data: any;
     onCommaTap?: (e: any) => void;
     commaSelected?: boolean;
 }
 
-class CommaModal extends ChartModal {
+class TriangleModal extends ChartModal {
     point: Point;
     text: string;
     color: string;
-    originData: any;
 }

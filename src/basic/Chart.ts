@@ -21,4 +21,6 @@ export interface ChartCfg extends SelfAdaptationCfg {
     unTap?: () => void;
 }
 
-export class ChartModal {}
+export class ChartModal {
+    originData: any;
+}
