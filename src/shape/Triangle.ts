@@ -23,7 +23,7 @@ export class Triangle extends Displayable {
         super(cfg);
         this.point = cfg.point;
         this.color = cfg.color;
-        this.size = cfg.size;
+        this.size = cfg.size !== undefined ? cfg.size : 1;
         this.calcTriangle();
     }
 
@@ -72,6 +72,15 @@ export class Triangle extends Displayable {
 
     pan(scaleInfo: ScaleInfo): void {
         this.point.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pcTop.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pcLeft.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pcRight.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pTopRight.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pLeftRight.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pRightLeft.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pLeftTop.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pTopLeft.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
+        this.pRightTop.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
     }
 
     private calcTriangle() {

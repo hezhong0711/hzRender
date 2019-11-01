@@ -1,19 +1,23 @@
 import { Chart, ChartCfg, ChartModal } from '../basic/Chart';
 import { Point } from '../unit/Point';
-import { Comma } from '../shape/Comma';
 import { Text } from '../shape/Text';
 import { ScaleType } from '../basic/Displayable';
+import { Triangle } from '../shape/Triangle';
+import { CurvePolyline } from '../shape/polyline/CurvePolyline';
 
 export class TriangleChart extends Chart {
+    // 主点
+    mainModal: TriangleModal;
     modals: TriangleModal[];
-    onCommaTap: (e: any) => void;
-    commaSelected: boolean = false;
+    onTriangleTap: (e: any) => void;
+    triangleSelected: boolean = false;
 
     constructor(cfg: TriangleChartCfg) {
         super(cfg);
         this.modals = cfg.data;
-        this.onCommaTap = cfg.onCommaTap;
-        this.commaSelected = cfg.commaSelected ? cfg.commaSelected : false;
+        this.mainModal = cfg.mainModal;
+        this.onTriangleTap = cfg.onTriangleTap;
+        this.triangleSelected = cfg.triangleSelected ? cfg.triangleSelected : false;
         this.process();
     }
 
@@ -27,25 +31,48 @@ export class TriangleChart extends Chart {
         this.selfAdaptation.adapt(points);
 
         this.drawText();
-        this.drawComma();
+        this.drawCurve();
+        this.drawTriangles();
+        this.drawMainTriangle();
     }
 
     render() {
         this.hz.render();
     }
 
-    private drawComma() {
+    private processDate() {}
+
+    private drawMainTriangle() {
+        this.hz.add(
+            new Triangle({
+                point: this.mainModal.point,
+                color: this.mainModal.color,
+                size: this.mainModal.size,
+                scaleType: ScaleType.POSITION,
+                selectable: this.triangleSelected,
+                onTap: () => {
+                    console.log('click triangle');
+                    if (this.onTriangleTap) {
+                        this.onTriangleTap(this.mainModal);
+                    }
+                },
+            }),
+        );
+    }
+
+    private drawTriangles() {
         this.modals.forEach(modal => {
             this.hz.add(
-                new Comma({
+                new Triangle({
                     point: modal.point,
                     color: modal.color,
+                    size: modal.size,
                     scaleType: ScaleType.POSITION,
-                    selectable: this.commaSelected,
+                    selectable: this.triangleSelected,
                     onTap: () => {
-                        console.log('click comma');
-                        if (this.onCommaTap) {
-                            this.onCommaTap(modal);
+                        console.log('click triangle');
+                        if (this.onTriangleTap) {
+                            this.onTriangleTap(modal);
                         }
                     },
                 }),
@@ -69,16 +96,34 @@ export class TriangleChart extends Chart {
             );
         });
     }
+
+    private drawCurve() {
+        this.modals.forEach(modal => {
+            // if (modal.id === this.mainModal.id) {
+            //     return;
+            // }
+
+            this.hz.add(
+                new CurvePolyline({
+                    points: [this.mainModal.point, modal.point],
+                    scaleType: ScaleType.SHAPE,
+                    lineColor: modal.color,
+                }),
+            );
+        });
+    }
 }
 
-interface TriangleChartCfg extends ChartCfg {
-    data: any;
-    onCommaTap?: (e: any) => void;
-    commaSelected?: boolean;
+export interface TriangleChartCfg extends ChartCfg {
+    data: TriangleModal[];
+    mainModal: TriangleModal;
+    onTriangleTap?: (e: any) => void;
+    triangleSelected?: boolean;
 }
 
-class TriangleModal extends ChartModal {
+export class TriangleModal extends ChartModal {
     point: Point;
     text: string;
     color: string;
+    size: number;
 }

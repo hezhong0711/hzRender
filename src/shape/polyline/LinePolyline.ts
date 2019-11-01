@@ -8,6 +8,7 @@ export class LinePolyline extends Polyline {
         super(cfg);
         this.linePaths = this.getLinePaths();
     }
+
     contain(x: number, y: number): boolean {
         const scalePaths = this.getScaleLinePaths();
         const point = new Point(x, y);
