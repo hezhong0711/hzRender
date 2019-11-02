@@ -17,9 +17,9 @@ export class Animator {
     }
 
     // 动画执行偏移量
-    animateDelta(execTime: number) {
+    animateDelta(execTime: number): Point {
         if (this.isDone) {
-            return;
+            return this.endPosition;
         }
 
         const percent = this.getAnimatePercent(execTime);

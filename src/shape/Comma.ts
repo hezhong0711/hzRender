@@ -89,6 +89,12 @@ export class Comma extends Displayable {
     pan(scaleInfo: ScaleInfo): void {
         this.point.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
     }
+
+    protected animateTo(delta: Point) {
+        const scaleDelta = this.getScalePoint(delta);
+        this.point.x = scaleDelta.x;
+        this.point.y = scaleDelta.y;
+    }
 }
 
 export interface CommaCfg extends DisplayableCfg {
