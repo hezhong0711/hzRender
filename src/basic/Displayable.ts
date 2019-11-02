@@ -2,6 +2,7 @@ import EventFul from './EventFul';
 import { ScaleInfo } from './ScaleInfo';
 import { Point } from '../unit/Point';
 import { LineHelper } from '../factory/LineHelper';
+import { Animator } from '../animation/Animator';
 
 export abstract class Displayable extends EventFul {
     zIndex: number;
@@ -13,6 +14,7 @@ export abstract class Displayable extends EventFul {
     visualSize: VisualSize = new VisualSize();
     selected: boolean = false;
     selectable: boolean;
+    animator: Animator;
 
     protected constructor(cfg: DisplayableCfg) {
         super();
@@ -23,6 +25,7 @@ export abstract class Displayable extends EventFul {
         this.scaleType = cfg.scaleType !== undefined ? cfg.scaleType : ScaleType.NONE;
         this.selectable = cfg.selectable !== undefined ? cfg.selectable : false;
         this.selected = cfg.selected !== undefined ? cfg.selected : false;
+        this.animator = cfg.animator !== undefined ? cfg.animator : null;
     }
 
     abstract draw(context: any, scaleInfo?: ScaleInfo): void;
@@ -38,6 +41,11 @@ export abstract class Displayable extends EventFul {
         this.scaleInfo = scaleInfo;
     }
 
+    animate(execTime: number) {
+        const deltaPosition = this.animator.animateDelta(execTime);
+        this.animateTo(deltaPosition);
+    }
+
     abstract pan(scaleInfo: ScaleInfo): void;
 
     unTap() {
@@ -45,7 +53,6 @@ export abstract class Displayable extends EventFul {
     }
 
     tap() {
-        console.log('123123');
         if (this.selectable) {
             this.selected = !this.selected;
         }
@@ -65,6 +72,8 @@ export abstract class Displayable extends EventFul {
         }
         return Point.scale(point, this.scaleInfo);
     }
+
+    protected animateTo(deltaPosition: Point) {}
 }
 
 export interface DisplayableCfg {
@@ -76,6 +85,7 @@ export interface DisplayableCfg {
     scaleType?: ScaleType; // 缩放类型
     selectable?: boolean; // 是否可以选中
     selected?: boolean; // 是否选中
+    animator?: Animator;
 }
 
 export class VisualSize {

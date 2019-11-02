@@ -1,6 +1,7 @@
 import { Displayable, VisualSize } from './basic/Displayable';
 import { TouchEventCfg, TouchEvent } from './basic/TouchEvent';
 import { ScaleInfo } from './basic/ScaleInfo';
+import { Tools } from './unit/Tools';
 
 export class hzRender {
     id: string;
@@ -8,7 +9,7 @@ export class hzRender {
     touchEventCfg?: TouchEventCfg;
 
     touchEvent: TouchEvent | undefined = undefined;
-
+    isStopAnimator: boolean = false;
     private list: Displayable[] = [];
     private context: CanvasContext;
 
@@ -37,38 +38,66 @@ export class hzRender {
     }
 
     clear() {
-        this.context.clearRect(20, 20, 40, 40);
-        this.context.draw(true);
+        this.context.clearRect(0, 0, this.visualSize.width, this.visualSize.height);
+        // this.context.draw(true);
     }
 
     render() {
+        const animatorSize = this.getAnimatorList().length;
+        if (animatorSize > 0) {
+            this.startAnimation();
+        } else {
+            this.draw();
+        }
+    }
+
+    private draw() {
+        this.clear();
         this.list.forEach(item => {
             item.draw(this.context);
         });
 
         this.context.draw();
-        //
+    }
 
-        // setTimeout(() => {
-        //     this.onScale(1.5, new Point(100, 100));
-        //     this.onScale(2, new Point(200, 100));
-        //     // this.clear();
-        //     // this.context.draw();
-        // }, 2000);
+    private startAnimation() {
+        // 计算最大执行时间
+        let maxDurtionTime = 0;
+        const animatorList = this.getAnimatorList();
+        animatorList.forEach(e => {
+            maxDurtionTime = Tools.getMax(e.animator.durationTime, maxDurtionTime);
+        });
+
+        const rate = 1000 / 30;
+
+        let deltaTime = 0;
+        const interval = setInterval(() => {
+            deltaTime += rate;
+            if (deltaTime >= maxDurtionTime || this.isStopAnimator) {
+                clearInterval(interval);
+            }
+
+            animatorList.forEach(e => {
+                e.animate(deltaTime);
+            });
+            this.draw();
+        }, rate);
     }
 
     // destory() {}
 
     private onScale(scaleInfo: ScaleInfo) {
+        this.stopAllAnimator();
         // this.clear();
         // this.context.scale(scale, scale);
         for (const obj of this.list) {
             obj.scale(scaleInfo);
         }
-        this.render();
+        this.draw();
     }
 
     private onTap(x: number, y: number) {
+        this.stopAllAnimator();
         let hasFindOne = false;
         for (let i = this.list.length - 1; i >= 0; i--) {
             const obj = this.list[i];
@@ -82,14 +111,15 @@ export class hzRender {
         if (!hasFindOne && this.touchEventCfg.onUnTap) {
             this.touchEventCfg.onUnTap();
         }
-        this.render();
+        this.draw();
     }
 
     private onPan(scaleInfo: ScaleInfo) {
+        this.stopAllAnimator();
         this.list.forEach(obj => {
             obj.pan(scaleInfo);
         });
-        this.render();
+        this.draw();
     }
 
     private registerEvent() {
@@ -103,6 +133,17 @@ export class hzRender {
         this.touchEvent.onPan = (scaleInfo: ScaleInfo) => {
             this.onPan(scaleInfo);
         };
+    }
+
+    private getAnimatorList() {
+        return this.list.filter(e => e.animator !== null && !e.animator.isDone);
+    }
+
+    private stopAllAnimator() {
+        this.isStopAnimator = true;
+        this.getAnimatorList().forEach(e => {
+            e.animator.stop();
+        });
     }
 }
 

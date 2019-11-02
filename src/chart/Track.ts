@@ -8,19 +8,6 @@ import { ReadType } from './ReadType';
 import { LineHelper } from '../factory/LineHelper';
 import { PolylineStyle } from '../shape/Polyline';
 
-const colorList = [
-    'rgba(151,0,237,1)',
-    'rgba(15,226,251,1)',
-    'rgba(255,95,129,1)',
-    'rgba(255,214,152,1)',
-    'rgba(255,95,129,1)',
-    'rgba(254,143,142,1)',
-    'rgba(244,91,245,1)',
-    'rgba(253,161,134,1)',
-    'rgba(254,206,98,1)',
-    'rgba(255,144,147,1)',
-    'rgba(138,184,255,1)',
-];
 const RADIOUS = 5;
 const MAX_DATA_SIZE = 100;
 

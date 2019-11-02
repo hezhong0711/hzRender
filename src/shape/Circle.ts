@@ -58,6 +58,12 @@ export class Circle extends Displayable {
     pan(scaleInfo: ScaleInfo): void {
         this.c.move(scaleInfo.panOffset.x, scaleInfo.panOffset.y);
     }
+
+    protected animateTo(delta: Point) {
+        const scaleDelta = this.getScalePoint(delta);
+        this.c.x = scaleDelta.x;
+        this.c.y = scaleDelta.y;
+    }
 }
 
 interface CircleCfg extends DisplayableCfg {
