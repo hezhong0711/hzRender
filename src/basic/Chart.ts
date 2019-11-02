@@ -23,5 +23,6 @@ export interface ChartCfg extends SelfAdaptationCfg {
 
 export class ChartModal {
     id: number;
+    selected: boolean;
     originData: any;
 }

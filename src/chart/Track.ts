@@ -68,7 +68,7 @@ export class Track extends Chart {
     process(data: any[]) {
         // 转换数据
         for (const item of data.slice(0, MAX_DATA_SIZE)) {
-            this.trackModals.push(TrackModal.mapper(item as TrackDataModal));
+            this.trackModals.push(item);
         }
 
         // 切分数据
@@ -126,6 +126,7 @@ export class Track extends Chart {
                     color: modal.point.color,
                     scaleType: this.circleScaleType,
                     selectable: this.circleSelected,
+                    selected: modal.selected,
                     onTap: () => {
                         if (this.onCircleTap) {
                             this.onCircleTap(modal, i);
@@ -259,51 +260,9 @@ interface TrackCfg extends ChartCfg {
 }
 
 export class TrackModal extends ChartModal {
-    static mapper(data: TrackDataModal) {
-        const modal = new TrackModal();
-        modal.point = new Point(data.list_info.list_x, data.list_info.list_y, colorList[data.list_info.list_type]);
-        modal.title = data.list_info.list_title.title_detail;
-        // modal.content = data.list_content;
-        modal.readType = data.read_type as ReadType;
-        modal.listId = data.list_info.list_id;
-        modal.originData = data;
-        return modal;
-    }
-
     point: Point;
     title: string;
     content: string;
     listId: string;
     readType: ReadType;
-}
-
-export class TrackDataModal {
-    delete_status: number;
-    list_info: TrackListInfo;
-    read_type: string;
-    user_info: any;
-
-    // list_id: string;
-    // list_title: string;
-    // list_content: string;
-    // list_x: number;
-    // list_y: number;
-    // list_type: number;
-}
-
-export class TrackListInfo {
-    delete_status: number;
-    list_content: [];
-    list_first_link_num: number;
-    list_id: string;
-    list_title: TrackListTitle;
-    list_type: number;
-    list_x: number;
-    list_y: number;
-    user_id: string;
-}
-
-export class TrackListTitle {
-    link: [];
-    title_detail: string;
 }

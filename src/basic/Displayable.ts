@@ -22,6 +22,7 @@ export abstract class Displayable extends EventFul {
         this.onScale = cfg.onScale;
         this.scaleType = cfg.scaleType !== undefined ? cfg.scaleType : ScaleType.NONE;
         this.selectable = cfg.selectable !== undefined ? cfg.selectable : false;
+        this.selected = cfg.selected !== undefined ? cfg.selected : false;
     }
 
     abstract draw(context: any, scaleInfo?: ScaleInfo): void;
@@ -74,6 +75,7 @@ export interface DisplayableCfg {
     onScale?: () => void;
     scaleType?: ScaleType; // 缩放类型
     selectable?: boolean; // 是否可以选中
+    selected?: boolean; // 是否选中
 }
 
 export class VisualSize {

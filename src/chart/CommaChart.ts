@@ -42,6 +42,7 @@ export class CommaChart extends Chart {
                     color: modal.color,
                     scaleType: ScaleType.POSITION,
                     selectable: this.commaSelected,
+                    selected: modal.selected,
                     onTap: () => {
                         console.log('click comma');
                         if (this.onCommaTap) {
