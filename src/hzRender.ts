@@ -10,7 +10,7 @@ export class hzRender {
 
     touchEvent: TouchEvent | undefined = undefined;
     isStopAnimator: boolean = false;
-    private list: Displayable[] = [];
+    list: Displayable[] = [];
     private context: CanvasContext;
 
     constructor(cfg: hzRenderCfg) {
@@ -51,13 +51,31 @@ export class hzRender {
         }
     }
 
-    private draw() {
+    draw() {
         this.clear();
         this.list.forEach(item => {
             item.draw(this.context);
         });
 
         this.context.draw();
+    }
+
+    onTap(x: number, y: number) {
+        this.stopAllAnimator();
+        let hasFindOne = false;
+        for (let i = this.list.length - 1; i >= 0; i--) {
+            const obj = this.list[i];
+            if (!hasFindOne && obj.contain(x, y) && obj.selectable) {
+                obj.tap();
+                hasFindOne = true;
+            } else {
+                obj.unTap();
+            }
+        }
+        if (!hasFindOne && this.touchEventCfg.onUnTap) {
+            this.touchEventCfg.onUnTap();
+        }
+        this.draw();
     }
 
     private startAnimation() {
@@ -71,16 +89,18 @@ export class hzRender {
         const rate = 1000 / 30;
 
         let deltaTime = 0;
+        let isDone = false;
         const interval = setInterval(() => {
             deltaTime += rate;
             if (deltaTime >= maxDurtionTime || this.isStopAnimator) {
                 clearInterval(interval);
+                isDone = true;
             }
 
             animatorList.forEach(e => {
                 e.animate(deltaTime);
             });
-            this.draw();
+            !isDone && this.draw();
         }, rate);
     }
 
@@ -92,24 +112,6 @@ export class hzRender {
         // this.context.scale(scale, scale);
         for (const obj of this.list) {
             obj.scale(scaleInfo);
-        }
-        this.draw();
-    }
-
-    private onTap(x: number, y: number) {
-        this.stopAllAnimator();
-        let hasFindOne = false;
-        for (let i = this.list.length - 1; i >= 0; i--) {
-            const obj = this.list[i];
-            if (!hasFindOne && obj.contain(x, y)) {
-                obj.tap();
-                hasFindOne = true;
-            } else {
-                obj.unTap();
-            }
-        }
-        if (!hasFindOne && this.touchEventCfg.onUnTap) {
-            this.touchEventCfg.onUnTap();
         }
         this.draw();
     }
@@ -139,7 +141,7 @@ export class hzRender {
         return this.list.filter(e => e.animator !== null && !e.animator.isDone);
     }
 
-    private stopAllAnimator() {
+    stopAllAnimator() {
         this.isStopAnimator = true;
         this.getAnimatorList().forEach(e => {
             e.animator.stop();
@@ -147,7 +149,7 @@ export class hzRender {
     }
 }
 
-interface hzRenderCfg {
+export interface hzRenderCfg {
     id: string;
     // 可以看见的区域大小
     width: number;

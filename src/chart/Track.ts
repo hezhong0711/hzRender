@@ -1,17 +1,19 @@
-import { Chart, ChartCfg, ChartModal } from '../basic/Chart';
-import { Point } from '../unit/Point';
-import { Circle } from '../shape/Circle';
-import { Text } from '../shape/Text';
-import { ScaleType } from '../basic/Displayable';
-import { RightAnglePolyline } from '../shape/polyline/RightAnglePolyline';
-import { ReadType } from './ReadType';
-import { LineHelper } from '../factory/LineHelper';
-import { PolylineStyle } from '../shape/Polyline';
+import {Chart, ChartCfg, ChartModal} from '../basic/Chart';
+import {Point} from '../unit/Point';
+import {Circle} from '../shape/Circle';
+import {Text} from '../shape/Text';
+import {ScaleType} from '../basic/Displayable';
+import {RightAnglePolyline} from '../shape/polyline/RightAnglePolyline';
+import {ReadType} from './ReadType';
+import {LineHelper} from '../factory/LineHelper';
+import {PolylineStyle} from '../shape/Polyline';
+import {hzRenderMultiSelected} from "../hzRenderMultiSelected";
 
 const RADIOUS = 5;
 const MAX_DATA_SIZE = 100;
 
 export class Track extends Chart {
+    selectedType: string;
     trackModals: TrackModal[] = [];
     solidLinePoints: TrackModal[][] = [];
     dashLinePoints: TrackModal[][] = [];
@@ -29,6 +31,7 @@ export class Track extends Chart {
     circleSelected: boolean = false;
     circleRadious: number;
     solidLineClickable: boolean;
+    selectedModal: TrackModal[] = [];
 
     constructor(cfg: TrackCfg) {
         super(cfg);
@@ -49,6 +52,7 @@ export class Track extends Chart {
         this.circleSelected = cfg.circleSelected !== undefined ? cfg.circleSelected : false;
         this.circleRadious = cfg.circleRadious !== undefined ? cfg.circleRadious : RADIOUS;
         this.solidLineClickable = cfg.solidLineClickable !== undefined ? cfg.solidLineClickable : true;
+        this.selectedType = cfg.selectedType ? cfg.selectedType : 'defalut';
         this.process(cfg.data);
     }
 
@@ -82,6 +86,16 @@ export class Track extends Chart {
         this.hz.render();
     }
 
+    getSelectedModal() {
+        const modals = [];
+        this.selectedModal
+            .filter(item => item.selected)
+            .forEach(item => {
+                modals.push(item)
+            });
+        return modals;
+    }
+
     private drawText() {
         for (const modal of this.trackModals) {
             const position = new Point(
@@ -105,25 +119,53 @@ export class Track extends Chart {
     private drawAllPoints() {
         for (let i = 0; i < this.trackModals.length; i++) {
             const modal = this.trackModals[i];
-            this.hz.add(
-                new Circle({
-                    cx: modal.point.x * this.selfAdaptation.scaleX + this.selfAdaptation.offsetX,
-                    cy: modal.point.y * this.selfAdaptation.scaleY + this.selfAdaptation.offsetY,
-                    r: this.circleRadious,
-                    color: modal.point.color,
-                    scaleType: this.circleScaleType,
-                    selectable: this.circleSelected,
-                    selected: modal.selected,
-                    onTap: () => {
+            const circle = new Circle({
+                cx: modal.point.x * this.selfAdaptation.scaleX + this.selfAdaptation.offsetX,
+                cy: modal.point.y * this.selfAdaptation.scaleY + this.selfAdaptation.offsetY,
+                r: this.circleRadious,
+                color: modal.point.color,
+                scaleType: this.circleScaleType,
+                selectable: this.circleSelected,
+                selected: modal.selected,
+                selectedType: this.selectedType,
+                onTap: () => {
+                    modal.selected = true;
+                    if (this.hz instanceof hzRenderMultiSelected) {
+                        this.pushToSelectedModal(modal);
+                    } else {
                         if (this.onCircleTap) {
                             this.onCircleTap(modal, i);
                         }
-                        console.log('click circle');
-                    },
-                }),
-            );
+                    }
+                },
+                onUnTap: () => {
+                    modal.selected = false;
+                    this.popFromSelectedModal(modal);
+                }
+            });
+            this.hz.add(circle);
         }
     }
+
+    private pushToSelectedModal(modal: TrackModal) {
+        for (const item of this.selectedModal) {
+            if (item.listId === modal.listId) {
+                item.selected = true;
+                return;
+            }
+        }
+        this.selectedModal.push(modal);
+    }
+
+    private popFromSelectedModal(modal: TrackModal) {
+        for (const item of this.selectedModal) {
+            if (item.listId === modal.listId) {
+                item.selected = false;
+                return;
+            }
+        }
+    }
+
 
     private drawSolidLine(startK: number) {
         this.solidLinePoints.forEach(modal => {
@@ -204,27 +246,25 @@ export class Track extends Chart {
     private addLinePathPoint(readType: ReadType, modal: TrackModal, idx: [number, number]) {
         switch (readType) {
             case ReadType.s:
-            case ReadType.s1:
-                {
-                    let arr = this.solidLinePoints[idx[0]];
-                    if (arr == null) {
-                        arr = [modal];
-                    } else {
-                        arr.push(modal);
-                    }
-                    this.solidLinePoints[idx[0]] = arr;
+            case ReadType.s1: {
+                let arr = this.solidLinePoints[idx[0]];
+                if (arr == null) {
+                    arr = [modal];
+                } else {
+                    arr.push(modal);
                 }
+                this.solidLinePoints[idx[0]] = arr;
+            }
                 break;
-            case ReadType.s2:
-                {
-                    let arr = this.dashLinePoints[idx[1]];
-                    if (arr == null) {
-                        arr = [modal];
-                    } else {
-                        arr.push(modal);
-                    }
-                    this.dashLinePoints[idx[1]] = arr;
+            case ReadType.s2: {
+                let arr = this.dashLinePoints[idx[1]];
+                if (arr == null) {
+                    arr = [modal];
+                } else {
+                    arr.push(modal);
                 }
+                this.dashLinePoints[idx[1]] = arr;
+            }
                 break;
         }
     }
@@ -244,6 +284,7 @@ interface TrackCfg extends ChartCfg {
     circleSelected?: boolean;
     circleRadious?: number;
     solidLineClickable?: boolean;
+    selectedType: string;
 }
 
 export class TrackModal extends ChartModal {

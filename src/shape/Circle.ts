@@ -6,12 +6,14 @@ export class Circle extends Displayable {
     c: Point;
     r: number;
     color: string;
+    selectedType: string;
 
     constructor(cfg: CircleCfg) {
         super(cfg);
         this.c = new Point(cfg.cx, cfg.cy);
         this.r = cfg.r == null ? 10 : cfg.r;
         this.color = cfg.color == null ? 'blue' : cfg.color;
+        this.selectedType = cfg.selectedType ? cfg.selectedType : 'defalut';
     }
 
     draw(context: CanvasContext): void {
@@ -21,20 +23,34 @@ export class Circle extends Displayable {
 
         const scaleC = this.getScalePoint(this.c);
         const scaleR = this.getScaleLength(this.r);
+
+        if (this.selected) {
+            switch (this.selectedType) {
+                case 'circle': {
+                    context.beginPath();
+                    context.setStrokeStyle(this.color);
+                    context.setFillStyle('#fff');
+                    context.arc(scaleC.x, scaleC.y, scaleR + 5, 0, Math.PI * 2);
+                    context.stroke();
+                    context.fill();
+                    break;
+                }
+                default: {
+                    const colorCfg = this.color.split(',');
+                    colorCfg.splice(colorCfg.length - 1, 1, '0.2)');
+                    const color = colorCfg.join(',');
+                    context.beginPath();
+                    context.setFillStyle(color);
+                    context.arc(scaleC.x, scaleC.y, scaleR + 5, 0, Math.PI * 2);
+                    context.fill();
+                }
+            }
+        }
+
         context.beginPath();
         context.arc(scaleC.x, scaleC.y, scaleR, 0, 2 * Math.PI);
         context.setFillStyle(this.color);
         context.fill();
-
-        if (this.selected) {
-            const colorCfg = this.color.split(',');
-            colorCfg.splice(colorCfg.length - 1, 1, '0.2)');
-            const color = colorCfg.join(',');
-            context.beginPath();
-            context.setFillStyle(color);
-            context.arc(scaleC.x, scaleC.y, scaleR + 5, 0, Math.PI * 2);
-            context.fill();
-        }
     }
 
     contain(x: number, y: number): boolean {
@@ -71,4 +87,5 @@ interface CircleCfg extends DisplayableCfg {
     cy: number;
     r?: number;
     color?: string;
+    selectedType?: string;
 }

@@ -1,12 +1,13 @@
 import EventFul from './EventFul';
-import { ScaleInfo } from './ScaleInfo';
-import { Point } from '../unit/Point';
-import { LineHelper } from '../factory/LineHelper';
-import { Animator } from '../animation/Animator';
+import {ScaleInfo} from './ScaleInfo';
+import {Point} from '../unit/Point';
+import {LineHelper} from '../factory/LineHelper';
+import {Animator} from '../animation/Animator';
 
 export abstract class Displayable extends EventFul {
     zIndex: number;
     onTap?: () => void;
+    onUnTap?: () => void;
     onScale?: () => void;
     onPan?: (x: number, y: number) => void;
     scaleInfo: ScaleInfo = new ScaleInfo();
@@ -20,6 +21,7 @@ export abstract class Displayable extends EventFul {
         super();
         this.zIndex = cfg.zIndex == null ? 0 : cfg.zIndex;
         this.onTap = cfg.onTap;
+        this.onUnTap = cfg.onUnTap;
         this.onPan = cfg.onPan;
         this.onScale = cfg.onScale;
         this.scaleType = cfg.scaleType !== undefined ? cfg.scaleType : ScaleType.NONE;
@@ -50,6 +52,9 @@ export abstract class Displayable extends EventFul {
 
     unTap() {
         this.selected = false;
+        if(this.onUnTap) {
+            this.onUnTap();
+        }
     }
 
     tap() {
@@ -73,7 +78,8 @@ export abstract class Displayable extends EventFul {
         return Point.scale(point, this.scaleInfo);
     }
 
-    protected animateTo(deltaPosition: Point) {}
+    protected animateTo(deltaPosition: Point) {
+    }
 }
 
 export interface DisplayableCfg {
