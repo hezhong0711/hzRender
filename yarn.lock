@@ -157,6 +157,11 @@
   dependencies:
     find-up "^2.1.0"
 
+"@dcloudio/types@*":
+  version "2.4.5"
+  resolved "https://registry.yarnpkg.com/@dcloudio/types/-/types-2.4.5.tgz#3ead18599a6da0052afb814b522bc007043d814c"
+  integrity sha512-6PUP4D4PZgm5Zc7hAegNZZreJN6D9VK8bEp/oHG3tevVJ0w9+C/9PBgcX1kStxIwqYcfR0dv8jTyjG08BF185Q==
+
 "@iamstarkov/listr-update-renderer@0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@iamstarkov/listr-update-renderer/-/listr-update-renderer-0.4.1.tgz#d7c48092a2dcf90fd672b6c8b458649cb350c77e"
@@ -187,10 +192,17 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@types/jest@^23.3.9":
-  version "23.3.10"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.10.tgz#4897974cc317bf99d4fe6af1efa15957fa9c94de"
-  integrity sha512-DC8xTuW/6TYgvEg3HEXS7cu9OijFqprVDXXiOcdOKZCU/5PJNLZU37VVvmZHdtMiGOa8wAA/We+JzbdxFzQTRQ==
+"@types/jest@^23.3.14":
+  version "23.3.14"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.14.tgz#37daaf78069e7948520474c87b80092ea912520a"
+  integrity sha512-Q5hTcfdudEL2yOmluA1zaSyPbzWPmJ3XfSWeP3RyoYvS9hnje1ZyagrZOuQ6+1nQC1Gw+7gap3pLNL3xL6UBug==
+
+"@types/vue@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/vue/-/vue-2.0.0.tgz#ec77b3d89591deb9ca5cb052368aa9c32be088e7"
+  integrity sha1-7Hez2JWR3rnKXLBSNoqpwyvgiOc=
+  dependencies:
+    vue "*"
 
 JSONStream@^1.0.4:
   version "1.3.5"
@@ -270,10 +282,22 @@ ansi-styles@^3.2.0, ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
+any-event@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/any-event/-/any-event-0.4.1.tgz#538a2c5ae66f587a85cc48c0438c021b2c61d352"
+  integrity sha512-MWCIcDOp2bcIVV+h7hvA/XetUpwx8zTC3GJIAEZ80zfrZ6Ghbio6ZOiKVFkZT4/cBKC0MCeefuqPPsL9Q4S1sQ==
+
 any-observable@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/any-observable/-/any-observable-0.3.0.tgz#af933475e5806a67d0d7df090dd5e8bef65d119b"
   integrity sha512-/FQM1EDkTsf63Ub2C6O7GuYFDsSXUwsaZDurV0np41ocwq0jthUAYCmhBX9f+KwlaCgIuWyr/4WlUQUBfKfZog==
+
+any-touch@^0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/any-touch/-/any-touch-0.4.11.tgz#f8620b04bfbc508830665b192c9690c681bafd9c"
+  integrity sha512-4zK09rzR4m3qi18k18sCbRhnwPQ2ZjfcJEqrWru+arFe1MMDcR6O3KxJ4yhTFabVHHyQ1eRWHHIdCiDhojKbsw==
+  dependencies:
+    any-event "^0.4.1"
 
 anymatch@^2.0.0:
   version "2.0.0"
@@ -4076,9 +4100,9 @@ path-key@^2.0.0, path-key@^2.0.1:
   integrity sha1-QRyttXTFoUDTpLGRDUDYDMn0C0A=
 
 path-parse@^1.0.5:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.6.tgz#d62dbb5679405d72c4737ec58600e9ddcf06d24c"
-  integrity sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
+  integrity sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==
 
 path-type@^1.0.0:
   version "1.1.0"
@@ -5304,6 +5328,11 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+vue@*:
+  version "2.6.14"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.14.tgz#e51aa5250250d569a3fbad3a8a5a687d6036e235"
+  integrity sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==
 
 w3c-hr-time@^1.0.1:
   version "1.0.1"
